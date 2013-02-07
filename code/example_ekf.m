@@ -11,7 +11,7 @@ N=length(t);
 % Transition model
 %
 f = @(x)model_pendulum(x,delta,'transition');
-Ffunc = @(x)model_pendulum(x,delta,'jacobian');
+F = @(x)model_pendulum(x,delta,'jacobian');
 
 % Observation matrix (only observe angle)
 %
@@ -50,7 +50,7 @@ P0 = diag([(2*pi)^2 (2*pi)^2]);
 
 % Apply EKF filter
 %
-m = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0);
+m = extended_kalman_filter(z,f,F,H,Q,R,m0,P0);
 
 % Plot trajecotry and EKF estimates
 %
@@ -99,9 +99,9 @@ for k=2:N
 
         % Compute the PCRB terms for the current trajectory realisation
         %
-        F = Ffunc(xk(:,i));
-        U = U + F'*Qinv*F;
-        V = V + -F'*Qinv;
+        Fhat = F(xk(:,i));
+        U = U + Fhat'*Qinv*Fhat;
+        V = V + -Fhat'*Qinv;
     end
     U=U./M;
     V=V./M;
@@ -128,7 +128,7 @@ parfor r=1:num_trials
     %
     v = mvnrnd([0 0]',Q,N)';
     x = zeros(2,N);
-    x(:,1)=mvnrnd(m0,P0)';
+    x(:,1)=x0; %mvnrnd(m0,P0)';
     for i=2:N
         x(:,i) = f(x(:,i-1)) + v(:,i);
     end
@@ -140,7 +140,7 @@ parfor r=1:num_trials
 
     % Apply EKF filter
     %
-    m = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0);
+    m = extended_kalman_filter(z,f,F,H,Q,R,m0,P0);
 
     % Accumulate the estimation error
     %

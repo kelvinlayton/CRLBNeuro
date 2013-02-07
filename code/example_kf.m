@@ -51,7 +51,7 @@ P0 = diag([(2*pi)^2 (2*pi)^2]);
 
 % Apply EKF filter
 %
-m = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0);
+m = extended_kalman_filter(z,f,Ffunc,H,Q,R,m0,P0);
 
 % Plot trajecotry and EKF estimates
 %
@@ -115,7 +115,7 @@ parfor r=1:num_trials
 
     % Apply EKF filter (really the KF in this case)
     %
-    m = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0);
+    m = extended_kalman_filter(z,f,Ffunc,H,Q,R,m0,P0);
 
     % Accumulate the estimation error
     %

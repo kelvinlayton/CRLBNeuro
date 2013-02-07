@@ -2,7 +2,9 @@
 % Kalman filter).
 % 
 % Inputs: z - measurements
-%         Ffunc - transition matrix function (a function that takes the
+%         f - transition function. For a regular Kalman fiter use 
+%                 @(x)(F*x), where F is the transition matrix
+%         F - transition matrix function (a function that takes the
 %                 current state and returns the Jacobian). For a regular
 %                 Kalman fiter use @(x)F, where F is the transition matrix
 %         H - the observation matrix
@@ -17,7 +19,7 @@
 % Kelvin Layton
 % Jan 2013
 %
-function [m, P] = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0)
+function [m, P] = extended_kalman_filter(z,f,F,H,Q,R,m0,P0)
 
     % Initialise variables
     %
@@ -25,19 +27,20 @@ function [m, P] = extended_kalman_filter(z,Ffunc,H,Q,R,m0,P0)
     m=zeros([length(m0),N]);
     P=zeros([size(P0),N]);
 
+        
     % Run Kalman filter over the given data
     %
     m(:,1)=m0;
     P(:,:,1)=P0;
     for i=2:N
         
-        % Get linearisation for EKF (note when Ffunc=@(x)F it returns F)
+        % Get linearisation for EKF (note when F=@(x)Fmat it returns Fmat)
         %
-        Fhat=Ffunc(m(:,i-1));
+        Fhat=F(m(:,i-1));
         
         % Prediction step
         %
-        m(:,i) = Fhat*m(:,i-1);
+        m(:,i) = f(m(:,i-1));
         P(:,:,i) = Fhat*P(:,:,i-1)*Fhat' + Q;
 
         % Update step
