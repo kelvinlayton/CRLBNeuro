@@ -1,0 +1,68 @@
+#!/usr/bin/perl -s
+#
+# take a latex AUX file and change the bibstyle to subset or subset-nocomment
+# depending on if the -c flag was given (-c means use comments), then rename
+# the modified file to references.aux, run bibtex on it, rename the file
+# references.bbl to references.bib and delete references.{aux,blg}.  This
+# results in a BibTeX file which can be shipped with the latex source of the
+# paper.  The \bibliography{} command in the latex file will need to be changed
+# to use the newly generated bibliography.
+#
+# assumes subset.bst and subset-nocomment.bst are in the input path
+#
+# V. Khera	07-AUG-1992
+# khera@cs.duke.edu
+
+$tmpfile = "refs$$";
+$outfile = "references.bib";
+
+$SIG{'INT'} = 'handler';
+$SIG{'QUIT'} = 'handler';
+$SIG{'TERM'} = 'handler';
+$| = 1;				# make sure output is flushed after print.
+
+sub handler {
+  local($sig) = @_;
+  print "Got a SIG$sig -- cleaning up\n";
+  &cleanup;
+  exit 1;
+}
+
+sub cleanup {
+  unlink <$tmpfile.*>;
+}
+
+$bibstyle = defined($c) ? "subset" : "subset-nocomment";
+
+die "usage: $0 [-c] <auxfile>\n" unless $#ARGV == 0;
+
+$infile = shift;
+
+# canonicalize the name to end i .aux. assumes file is in current directory,
+# even though a path may have been specified.  tough noogies, i say!
+$infile =~ s#(.*/)?([^.]*).*#\2.aux#;
+
+die "No such file $infile\n" unless -f $infile;
+
+open(INF,$infile) || die "Cannot read $infile\n";
+@auxdata = <INF>;		# slurp the whole file in
+close(INF);
+
+# create a new AUX file with subset bibstyle specified.
+@result = grep(m/(\\citation|\\bibdata).*/ , @auxdata);
+die "No citations or data files specified in $infile\n" unless @result;
+push(@result,"\\bibstyle{$bibstyle}\n");
+
+open (OUTF,">$tmpfile.aux") || die "Cannot create temp file\n";
+print OUTF @result;
+close(OUTF);
+
+print "Running bibtex...\n";
+
+$result = system "bibtex $tmpfile";
+die "Error running bibtex\n" unless ($result >> 8) == 0;
+rename ("$tmpfile.bbl", $outfile);
+
+print "Output is in $outfile\n";
+
+&cleanup;
