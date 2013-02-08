@@ -16,11 +16,23 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \citation{Tichavsky1998}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Model}{1}{section.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Pendulum example}{1}{subsection.1.1}}
+\newlabel{eqn:model_general}{{1}{1}{Model\relax }{equation.1.1b}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}PCRB}{1}{section.2}}
-\newlabel{eqn:pcrb_u}{{14}{2}{PCRB\relax }{equation.2.14}{}}
-\newlabel{eqn:pcrb_v}{{15}{2}{PCRB\relax }{equation.2.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Monte Carlo approximation}{2}{subsection.2.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Pendulum simulations}{3}{subsection.2.2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Trajectory of a pendulum and EKF estimates\relax }}{3}{figure.caption.1}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MSE of EKF estimates (averaged over 1000 realisations) compared to the PCRB. The suboptimal EKF is dependent on the accuracy of the linearisation at different angles, an optimal filter would achieve the CRB at all times\relax }}{3}{figure.caption.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Fisher information recursion (non-singular $Q$)}{1}{subsection.2.1}}
+\citation{Bergman2001}
+\newlabel{eqn:recursion_U}{{11}{2}{Fisher information recursion (non-singular $Q$)\relax }{equation.2.11}{}}
+\newlabel{eqn:recursion_V}{{12}{2}{Fisher information recursion (non-singular $Q$)\relax }{equation.2.12}{}}
+\newlabel{eqn:recursion_W}{{13}{2}{Fisher information recursion (non-singular $Q$)\relax }{equation.2.13}{}}
+\newlabel{eqn:pcrb_u}{{21}{2}{Fisher information recursion (non-singular $Q$)\relax }{equation.2.21}{}}
+\newlabel{eqn:pcrb_v}{{22}{2}{Fisher information recursion (non-singular $Q$)\relax }{equation.2.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Cramer-Rao bound recursion (singular $Q$)}{2}{subsection.2.2}}
+\newlabel{eqn:pcrb_term_F}{{32}{3}{Cramer-Rao bound recursion (singular $Q$)\relax }{equation.2.32}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Monte Carlo approximations}{3}{subsection.2.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Pendulum example}{3}{section.3}}
+\bibstyle{ieeetr}
+\bibdata{references}
+\bibcite{Tichavsky1998}{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Simulations}{4}{subsection.3.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Trajectory of a pendulum and EKF estimates\relax }}{4}{figure.caption.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MSE of EKF estimates (averaged over 1000 realisations) compared to the PCRB. The suboptimal EKF is slightly above the PCRB.\relax }}{4}{figure.caption.2}}
+\bibcite{Bergman2001}{2}

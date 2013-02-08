@@ -1,21 +1,9 @@
 \documentclass{article}
 
-\input{../common/latex_includes.tex}
-\usepackage[T1]{fontenc}
-\usepackage{palatino}
-
-\usepackage{siunitx}
-% \sisetup{%
-%   mode = math,
-% %  per-mode = symbol,
-% %  per-mode=repeated-symbol,
-%   per-mode=reciprocal,
-%   detect-all
-% }
-% \sisetup{per-mode=reciprocal}
+\input{latex_includes.tex}
 
 \title{PCRB}
-\author{Kelvin Layton}
+
 \date{\today}
 
 \begin{document}
@@ -23,14 +11,114 @@
 \section{Model}
 
 The model takes the form
+\begin{subequations}
 \begin{align}
 	\vec x_k &= \vec f(\vec x_{k-1}) + \vec v_k \\
 	\vec y_k &= \mat H\vec x_{k-1} + \vec w_k
 \end{align}
-where $\vec v_k$ and $\vec w_k$ are white, uncorrelated, zero mean Gaussian noise vectors with covariances of $\mat Q$ and $\mat R$, respectively.
+\label{eqn:model_general}
+\end{subequations}
+where $\vec v_k$ and $\vec w_k$ are white, uncorrelated, zero mean Gaussian noise vectors with covariances of $\mat Q$ and $\mat R$, respectively. For this model the transition density is defined as
+\begin{align}
+	p(\vec x_k|\vec x_{k-1}) &= \mathcal N(\vec f(\vec x_{k-1})),\mat Q) \\
+	&= (2\pi)^{-d/2} |\mat Q|^{-1/2} \exp\left(-\frac{1}{2}(\vec x_k - \vec f(\vec x_{k-1}))^T \mat Q^{-1} (\vec x_k - \vec f(\vec x_{k-1})) \right)
+\end{align}
+and the likelihood is
+\begin{align}
+	p(\vec y_k|\vec x_k) &= \mathcal N(\mat H\vec x_k,\mat R) \\
+	&= (2\pi)^{-n/2} |\mat R|^{-1/2} \exp\left(-\frac{1}{2}(\vec y_k - \mat H\vec x_k)^T \mat R^{-1} (\vec y_k - \mat H\vec x_k) \right)
+\end{align}
+
+\section{PCRB}
+
+The PCRB is computed from the Fisher information matrix computed on the joint density $p(\vec y,\vec x)$,
+\begin{align}
+	\mat J &= \mathbb E\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right]
+\end{align}
+where the expectation is taken over $\vec y$ and $\vec x$. The PCRB bounds the covariance of an unbiased estimator, $\mat P$,
+\begin{align}
+	\mat P &\ge \mat J^{-1}
+\end{align}
 
 
-\subsection{Pendulum example}
+Recursive formulas are based on the logarithm of the likelihood and transition densities, which for the model above are
+\begin{align}
+	\log p(\vec x_k|\vec x_{k-1}) &= C_1 -\frac{1}{2}(\vec x_k - \vec f(\vec x_{k-1}))^T \mat Q^{-1} (\vec x_k - \vec f(\vec x_{k-1})) \\
+	\log p(\vec y_k|\vec x_k) &= C_2 -\frac{1}{2}(\vec y_k - \mat H\vec x_k)^T \mat R^{-1} (\vec y_k - \mat H\vec x_k)
+\end{align}
+
+\subsection{Fisher information recursion (non-singular $Q$)} 
+A recursive formula for the FIM, $\mat J_k$, was developed in \cite{Tichavsky1998}. The recursion proceeds as
+\begin{align}
+	\mat J_k(\vec x_k) &= \mat W_k - \mat V_k^T\left[ \mat J_{k-1}(\vec x_{k-1}) + \mat U_k\right]^{-1}\mat V_k 
+\end{align}
+where
+\begin{align}
+	\mat U_k &= -\mathbb E\left[ \nabla_{\vec x_{k-1}}\nabla_{\vec x_{k-1}}^T \log p(\vec x_k|\vec x_{k-1}) \right] \label{eqn:recursion_U}\\
+	\mat V_k &= -\mathbb E\left[ \nabla_{\vec x_{k-1}}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) \right] \label{eqn:recursion_V}\\
+	\mat W_k &= -\mathbb E\left[ \nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) \right] - \mathbb E\left[ \nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) \right] \label{eqn:recursion_W}
+\end{align}
+
+The derivatives for the above model are
+\begin{align}
+	\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= -(\vec x_k - \vec f(\vec x_{k-1}))^T\mat Q^{-1}  \\
+	\nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= -\mat Q^{-1} \\
+	\nabla_{\vec x_{k-1}}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= \mat F(\vec x_{k-1})\mat Q^{-1} \\
+	\nabla_{\vec x_{k-1}}^T \log p(\vec x_k|\vec x_{k-1}) &= (\vec x_k - \vec f(\vec x_{k-1}))^T\mat Q^{-1} \mat F(\vec x_{k-1}) \\
+	\nabla_{\vec x_{k-1}}\nabla_{\vec x_{k-1}}^T \log p(\vec x_k|\vec x_{k-1}) &= -\mat F(\vec x_{k-1})^T\mat Q^{-1} \mat F(\vec x_{k-1}) \\
+	\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) &= (\vec y_k - \mat H\vec x_k)^T\mat R^{-1} \mat H \\
+	\nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) &= -\mat H^T\mat R^{-1} \mat H 
+\end{align}
+Substituting these into \eqref{eqn:recursion_U}--\eqref{eqn:recursion_W} gives,
+\begin{align}
+	 \mat U_k &= \mathbb E\left[ \mat F(\vec x_{k-1})^T\mat Q^{-1} \mat F(\vec x_{k-1}) \right ] \label{eqn:pcrb_u} \\
+	\mat V_k &= \mathbb E\left[ -\mat F(\vec x_{k-1})^T\mat Q^{-1} \right ] \label{eqn:pcrb_v} \\
+	\mat W_k &= \mat H^T\mat R^{-1}\mat H + \mat Q^{-1}
+\end{align}
+
+When noise is only added to a subset of the states each transition, $\mat Q$ is singular and $\mat Q^{-1}$ does not exist. Another method is required.
+
+\subsection{Cramer-Rao bound recursion (singular $Q$)} 
+
+An alternative formulation is to recursively compute the bound at each step. That is, compute $\mat P_k = \mat J_k^{-1}$ directly rather than $\mat J_k$. The formulas suggested in \cite{Bergman2001} are applicable to wider class of models (e.g. multiplicative noise), denoted by a general transition function $\tilde{\vec f}(\vec x_k,\vec v_k)$. The recursion is
+\begin{align}
+	\mat P_k &= \bar{\mat F}_{k-1}\left(\mat P_{k-1}^{-1} + \bar{\mat R}_{k-1}^{-1}\right)^{-1}\bar{\mat F}_{k-1} + \bar{\mat G}_{k-1}\mat Q_k \bar{\mat G}_{k-1}^{-1}
+\end{align}
+where
+\begin{align}
+	\bar{\mat F}_k &= \mathbb E \left[ \nabla_{\vec x_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
+	\bar{\mat R}_k^{-1} &= -\mathbb E\left[ \nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) \right] \\
+	\bar{\mat G}_k &= \mathbb E \left[ \nabla_{\vec v_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
+	\mat Q_k^{-1} &= -\mathbb E \left[ \nabla_{\vec v_k}\nabla_{\vec v_k}^T \log p(\vec v_k) \right]
+\end{align}
+and $\mat P_0^{-1}$ is the inverse of the prior covariance. The model in \eqref{eqn:model_general} is represented by $\tilde{\vec f}(\vec x_k,\vec v_k) = \vec f(\vec x_k) + \vec v_k$. This simplifies the derivatives to
+\begin{align}
+	\nabla_{\vec x_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat F_k(\vec x_k) \\
+	\nabla_{\vec v_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat I_{d\times d} \\
+	\nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) &= -\mat H^T\mat R^{-1} \mat H 
+\end{align}
+and the corresponding matrices to	
+\begin{align}
+	\bar{\mat F}_k &= \mathbb E\left[ \mat F_k(\vec x_k)\right] \label{eqn:pcrb_term_F}\\
+	\bar{\mat R}_k^{-1} &= -\mat H^T\mat R^{-1} \mat H \\
+	\bar{\mat G}_k &= \mat I_{d\times d} 
+\end{align}
+Notice that $\mat Q^{-1}$ is not directly required in the recursion, so this method is applicable to neural field models where process noise is only added to a single state.
+
+\subsection{Monte Carlo approximations}
+
+The expectations in \eqref{eqn:pcrb_u} and \eqref{eqn:pcrb_v} or \eqref{eqn:pcrb_term_F} can be approximated by numerical integration using many trajectory realisations. That is,
+\begin{align}
+	\mat U_k &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})^T\mat Q^{-1} \mat F(\vec x_{k-1}^{(i)}) \\
+	\mat V_k &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})^T\mat Q^{-1}  
+\end{align}
+or alternatively,
+\begin{align}
+	\bar{\mat F}_{k-1} &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})
+\end{align}
+
+
+\section{Pendulum example}
 
 Let $\vec x_k = [a_k\quad b_k]^T$ where $a_k$ is the pendulum angle and $b_k$ is the angular velocity,
 \begin{align}
@@ -47,61 +135,24 @@ The linearisation used for the EKF is
 \end{align}
 The observation matrix is $H=[1\quad 0]$, so that only the first state element is measured.
 
-\section{PCRB}
-
-The PCRB is computed from the Fisher information matrix computed on the joint density $p(\vec y,\vec x)$,
-\begin{align}
-	\mat J &= \mathbb E\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right]
-\end{align}
-where the expectation is taken over $\vec y$ and $\vec x$. A recursive formula was developed in \cite{Tichavsky1998} and is based on the transition density,
-\begin{align}
-	p(\vec x_k|\vec x_{k-1}) &= \mathcal N(\vec f(\vec x_{k-1})),\mat Q) \\
-	&= (2\pi)^{-d/2} |\mat Q|^{-1/2} \exp\left(-\frac{1}{2}(\vec x_k - \vec f(\vec x_{k-1}))^T \mat Q^{-1} (\vec x_k - \vec f(\vec x_{k-1})) \right)
-\end{align}
-The PCRB is calculated using the logarithm of the transition density,
-\begin{align}
-	\log p(\vec x_k|\vec x_{k-1}) = C -\frac{1}{2}(\vec x_k - \vec f(\vec x_{k-1}))^T \mat Q^{-1} (\vec x_k - \vec f(\vec x_{k-1})) 
-\end{align}
-The derivatives are
-\begin{align}
-	\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= -(\vec x_k - \vec f(\vec x_{k-1}))^T\mat Q^{-1}  \\
-	\nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= -\mat Q^{-1} \\
-	\nabla_{\vec x_{k-1}}\nabla_{\vec x_k}^T \log p(\vec x_k|\vec x_{k-1}) &= \mat F(\vec x_{k-1})\mat Q^{-1} \\
-	\nabla_{\vec x_{k-1}}^T \log p(\vec x_k|\vec x_{k-1}) &= (\vec x_k - \vec f(\vec x_{k-1}))^T\mat Q^{-1} \mat F(\vec x_{k-1}) \\
-	\nabla_{\vec x_{k-1}}\nabla_{\vec x_{k-1}}^T \log p(\vec x_k|\vec x_{k-1}) &= -\mat F(\vec x_{k-1})^T\mat Q^{-1} \mat F(\vec x_{k-1}) 
-\end{align}
-Now the terms in the recursive formula for the Fisher information matrix are
-\begin{align}
-	 \mat U_k &= \mathbb E\left[ \mat F(\vec x_{k-1})^T\mat Q^{-1} \mat F(\vec x_{k-1}) \right ] \label{eqn:pcrb_u} \\
-	\mat V_k &= \mathbb E\left[ -\mat F(\vec x_{k-1})^T\mat Q^{-1} \right ] \label{eqn:pcrb_v} \\
-	\mat W_k &= \mat H^T\mat R^{-1}\mat H + \mat Q^{-1}
-\end{align}
-
-\subsection{Monte Carlo approximation}
-
-The expectations in \eqref{eqn:pcrb_u} and \eqref{eqn:pcrb_v} can be approximated by numerical integration using many trajectory realisations. That is,
-\begin{align}
-	\mat U_k &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})^T\mat Q^{-1} \mat F(\vec x_{k-1}^{(i)}) \\
-	\mat V_k &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})^T\mat Q^{-1} 
-\end{align}
-
-
-\subsection{Pendulum simulations}
+\subsection{Simulations}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figures/pendulum_trajectory}
+	\includegraphics[width=0.75\textwidth]{../figures/pendulum_trajectory}
 	\caption{Trajectory of a pendulum and EKF estimates}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\textwidth]{figures/pendulum_pcrb}
-	\caption{MSE of EKF estimates (averaged over 1000 realisations) compared to the PCRB. The suboptimal EKF is dependent on the accuracy of the linearisation at different angles, an optimal filter would achieve the CRB at all times}
+	\includegraphics[width=0.75\textwidth]{../figures/pendulum_pcrb}
+	\caption{MSE of EKF estimates (averaged over 1000 realisations) compared to the PCRB. The suboptimal EKF is slightly above the PCRB.}
 \end{figure}
 
-% \small
-% \bibliographystyle{ieeetr}
-% \bibliography{../library}
+\small
+\bibliographystyle{ieeetr}
+\bibliography{references}
+% \bibliography{../../library}
+
 
 
 \end{document}

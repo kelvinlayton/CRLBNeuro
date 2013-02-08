@@ -1,0 +1,9 @@
+# Fdb version 2
+["latex"] 0 "latex_includes.tex" "latex_includes.dvi" "latex_includes" 
+  "latex_includes.tex" 1360282635 2212 d7ce16e904cf365b345fb1ab3e5f6a7d ""
+["pdflatex"] 1360282672 "latex_includes.tex" "latex_includes.pdf" "latex_includes" 
+  "e.g., `I\hbox'" 0 -1 0 ""
+  "e.g., `\hobx'" 0 -1 0 ""
+  "job aborted, no legal \end found" 0 -1 0 ""
+  "latex_includes.aux" 1360282636 8 a94a2480d3289e625eea47cd1b285758 ""
+  "latex_includes.tex" 1360282670 2454 7fc0da1496ad5a911db558f1a034574e ""
