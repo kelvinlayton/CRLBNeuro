@@ -100,7 +100,7 @@ and $\mat P_0^{-1}$ is the inverse of the prior covariance. The model in \eqref{
 and the corresponding matrices to	
 \begin{align}
 	\bar{\mat F}_k &= \mathbb E\left[ \mat F_k(\vec x_k)\right] \label{eqn:pcrb_term_F}\\
-	\bar{\mat R}_k^{-1} &= -\mat H^T\mat R^{-1} \mat H \\
+	\bar{\mat R}_k^{-1} &= \mat H^T\mat R^{-1} \mat H \\
 	\bar{\mat G}_k &= \mat I_{d\times d} 
 \end{align}
 Notice that $\mat Q^{-1}$ is not directly required in the recursion, so this method is applicable to neural field models where process noise is only added to a single state.
