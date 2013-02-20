@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  18 FEB 2013 14:54
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  21 FEB 2013 10:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -953,40 +953,40 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `math shift' on input line 81.
 
-[2] <../figures/pendulum_trajectory.pdf, id=100, 553.06625pt x 465.74pt>
+[2] [3] <../figures/pendulum_trajectory.pdf, id=122, 553.06625pt x 465.74pt>
 File: ../figures/pendulum_trajectory.pdf Graphic file (type pdf)
 
 <use ../figures/pendulum_trajectory.pdf>
 Package pdftex.def Info: ../figures/pendulum_trajectory.pdf used on input line 
-142.
+156.
 (pdftex.def)             Requested size: 258.75pt x 217.88869pt.
 
-<../figures/pendulum_pcrb.pdf, id=101, 563.10374pt x 466.74374pt>
+<../figures/pendulum_pcrb.pdf, id=123, 563.10374pt x 466.74374pt>
 File: ../figures/pendulum_pcrb.pdf Graphic file (type pdf)
 
 <use ../figures/pendulum_pcrb.pdf>
-Package pdftex.def Info: ../figures/pendulum_pcrb.pdf used on input line 147.
+Package pdftex.def Info: ../figures/pendulum_pcrb.pdf used on input line 161.
 (pdftex.def)             Requested size: 258.75pt x 214.4697pt.
- [3] (./PCRB.bbl [4 <../figures/pendulum_trajectory.pdf> <../figures/pendulum_p
-crb.pdf>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 158.
- [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 158.
+ [4 <../figures/pendulum_trajectory.pdf>]
+(./PCRB.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 172.
+ [5 <../figures/pendulum_pcrb.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 172.
  (./PCRB.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 158.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 158.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 172.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 172.
 Package rerunfilecheck Info: File `PCRB.out' has not changed.
-(rerunfilecheck)             Checksum: 421E99045A4C32E87FDE002D36606683;466.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 158.
+(rerunfilecheck)             Checksum: 3AEB622B22A65ECA84E0441AE4472F85;555.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 172.
  ) 
 Here is how much of TeX's memory you used:
- 17682 strings out of 493488
- 327425 string characters out of 3141326
- 391146 words of memory out of 3000000
- 20672 multiletter control sequences out of 15000+200000
+ 17688 strings out of 493488
+ 327507 string characters out of 3141326
+ 392146 words of memory out of 3000000
+ 20673 multiletter control sequences out of 15000+200000
  26839 words of font info for 80 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 46i,15n,42p,392b,842s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 46i,15n,42p,392b,743s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
@@ -1005,10 +1005,10 @@ f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2012/
 texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2012/texmf-d
 ist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2012/texmf-dist/fon
 ts/type1/urw/palatino/uplri8a.pfb>
-Output written on PCRB.pdf (5 pages, 211048 bytes).
+Output written on PCRB.pdf (5 pages, 214959 bytes).
 PDF statistics:
- 211 PDF objects out of 1000 (max. 8388607)
- 181 compressed objects within 2 object streams
- 59 named destinations out of 1000 (max. 500000)
- 79 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 221 PDF objects out of 1000 (max. 8388607)
+ 191 compressed objects within 2 object streams
+ 64 named destinations out of 1000 (max. 500000)
+ 87 words of extra memory for PDF output out of 10000 (max. 10000000)
 
