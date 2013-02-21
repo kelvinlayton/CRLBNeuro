@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  21 FEB 2013 15:04
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  21 FEB 2013 15:26
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**PCRB.tex
-(./PCRB.tex
+**Sigmoid_Functions.tex
+(./Sigmoid_Functions.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
 rman-x-2012-05-30, ngerman-x-2012-05-30, afrikaans, ancientgreek, ibycus, arabi
@@ -390,8 +390,9 @@ LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
 ))
 (/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/palatino.sty
 Package: palatino 2005/04/12 PSNFSS-v9.2a (SPQR) 
-) (./PCRB.aux)
-\openout1 = `PCRB.aux'.
+)
+(./Sigmoid_Functions.aux)
+\openout1 = `Sigmoid_Functions.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
 LaTeX Font Info:    ... okay on input line 35.
@@ -408,6 +409,7 @@ LaTeX Font Info:    ... okay on input line 35.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
 LaTeX Font Info:    ... okay on input line 35.
 LaTeX Font Info:    Try loading font information for T1+ppl on input line 35.
+
 (/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/t1ppl.fd
 File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 )
@@ -460,100 +462,56 @@ LaTeX Info: Redefining \ref on input line 35.
 LaTeX Info: Redefining \pageref on input line 35.
 LaTeX Info: Redefining \nameref on input line 35.
 
-(./PCRB.out) (./PCRB.out)
+(./Sigmoid_Functions.out) (./Sigmoid_Functions.out)
 \@outlinefile=\write3
-\openout3 = `PCRB.out'.
+\openout3 = `Sigmoid_Functions.out'.
 
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 37.
-LaTeX Font Info:    Try loading font information for U+msa on input line 42.
+LaTeX Font Info:    Try loading font information for U+msa on input line 40.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 42.
+LaTeX Font Info:    Try loading font information for U+msb on input line 40.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 76.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 76.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 76.
-
-[1
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 70.
+ [1
 
 {/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 70.
 
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 107.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 107.
-
-[2] [3] <../figures/pendulum_trajectory.pdf, id=123, 553.06625pt x 465.74pt>
-File: ../figures/pendulum_trajectory.pdf Graphic file (type pdf)
-
-<use ../figures/pendulum_trajectory.pdf>
-Package pdftex.def Info: ../figures/pendulum_trajectory.pdf used on input line 
-184.
-(pdftex.def)             Requested size: 258.75pt x 217.88869pt.
-
-<../figures/pendulum_pcrb.pdf, id=124, 563.10374pt x 466.74374pt>
-File: ../figures/pendulum_pcrb.pdf Graphic file (type pdf)
-
-<use ../figures/pendulum_pcrb.pdf>
-Package pdftex.def Info: ../figures/pendulum_pcrb.pdf used on input line 189.
-(pdftex.def)             Requested size: 258.75pt x 214.4697pt.
- [4 <../figures/pendulum_trajectory.pdf>]
-(./PCRB.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 200.
- [5 <../figures/pendulum_pcrb.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 200.
- (./PCRB.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 200.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 200.
-Package rerunfilecheck Info: File `PCRB.out' has not changed.
-(rerunfilecheck)             Checksum: 3AEB622B22A65ECA84E0441AE4472F85;555.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 200.
+(./Sigmoid_Functions.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 70.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 70.
+Package rerunfilecheck Info: File `Sigmoid_Functions.out' has not changed.
+(rerunfilecheck)             Checksum: 93C069FBA671B70497B801C8AD7007E2;116.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 70.
  ) 
 Here is how much of TeX's memory you used:
- 8575 strings out of 493488
- 124743 string characters out of 3141326
- 251055 words of memory out of 3000000
- 11698 multiletter control sequences out of 15000+200000
- 23029 words of font info for 62 fonts, out of 3000000 for 9000
+ 8430 strings out of 493488
+ 122982 string characters out of 3141326
+ 223519 words of memory out of 3000000
+ 11638 multiletter control sequences out of 15000+200000
+ 10088 words of font info for 28 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 44i,15n,42p,390b,332s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 44i,11n,42p,247b,322s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/te
 xlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/tex
-live/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texl
-ive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texliv
-e/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/
-2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/
-2012/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb></usr/local/texl
-ive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
-e/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2
-012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2012
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2012/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2012/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2012/texm
-f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2012/
-texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2012/texmf-d
-ist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2012/texmf-dist/fon
-ts/type1/urw/palatino/uplri8a.pfb>
-Output written on PCRB.pdf (5 pages, 214909 bytes).
+live/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texli
+ve/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/
+2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
+012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/201
+2/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2012/texmf
+-dist/fonts/type1/urw/palatino/uplr8a.pfb>
+Output written on Sigmoid_Functions.pdf (1 page, 82305 bytes).
 PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
- 192 compressed objects within 2 object streams
- 65 named destinations out of 1000 (max. 500000)
- 87 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 65 PDF objects out of 1000 (max. 8388607)
+ 53 compressed objects within 1 object stream
+ 9 named destinations out of 1000 (max. 500000)
+ 29 words of extra memory for PDF output out of 10000 (max. 10000000)
 
