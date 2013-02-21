@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  8 FEB 2013 11:17
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  11 FEB 2013 12:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -145,36 +145,24 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.15 \usepackage{
-                 siunitx}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
-
-
-./latex_includes.tex:16: LaTeX Error: \usepackage before \documentclass.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.16 \usepackage{
                  booktabs}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
 
-./latex_includes.tex:18: LaTeX Error: \usepackage before \documentclass.
+./latex_includes.tex:17: LaTeX Error: \usepackage before \documentclass.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.18 ...okmarksopen=true, bookmarksnumbered=true]{
+l.17 ...okmarksopen=true, bookmarksnumbered=true]{
                                                   hyperref}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
-./latex_includes.tex:22: Undefined control sequence.
-l.22 \hypersetup
+./latex_includes.tex:21: Undefined control sequence.
+l.21 \hypersetup
                 {linkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -183,13 +171,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-./latex_includes.tex:22: LaTeX Error: Missing \begin{document}.
+./latex_includes.tex:21: LaTeX Error: Missing \begin{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.22 \hypersetup{l
+l.21 \hypersetup{l
                   inkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -240,8 +228,8 @@ Missing character: There is no b in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no e in font nullfont!
-./latex_includes.tex:23: Undefined control sequence.
-l.23 \hypersetup
+./latex_includes.tex:22: Undefined control sequence.
+l.22 \hypersetup
                 {colorlinks=true}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -265,24 +253,24 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no e in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 22--24
+Overfull \hbox (20.0pt too wide) in paragraph at lines 21--23
 []
  []
 
 
-./latex_includes.tex:25: LaTeX Error: \usepackage before \documentclass.
+./latex_includes.tex:24: LaTeX Error: \usepackage before \documentclass.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.25 \usepackage{
+l.24 \usepackage{
                  siunitx}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
-./latex_includes.tex:33: Undefined control sequence.
-l.33 \sisetup
+./latex_includes.tex:32: Undefined control sequence.
+l.32 \sisetup
              {per-mode=reciprocal}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -291,13 +279,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-./latex_includes.tex:33: LaTeX Error: Missing \begin{document}.
+./latex_includes.tex:32: LaTeX Error: Missing \begin{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.33 \sisetup{p
+l.32 \sisetup{p
                er-mode=reciprocal}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -322,9 +310,21 @@ Missing character: There is no c in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no l in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 33--34
+Overfull \hbox (20.0pt too wide) in paragraph at lines 32--33
 [] 
  []
+
+
+./latex_includes.tex:34: LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.34 \usepackage[T1]{
+                     fontenc}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
 
 
 ./latex_includes.tex:35: LaTeX Error: \usepackage before \documentclass.
@@ -333,22 +333,19 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.35 \usepackage[T1]{
-                     fontenc}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
-
-
-./latex_includes.tex:36: LaTeX Error: \usepackage before \documentclass.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.36 \usepackage{
+l.35 \usepackage{
                  palatino}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
+
+./latex_includes.tex:37: Undefined control sequence.
+l.37 \allowdisplaybreaks
+                        
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 
 ./latex_includes.tex:44: LaTeX Error: \qedsymbol undefined.
