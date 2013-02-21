@@ -12,8 +12,8 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 %
-% mode='alpha';
-mode='seizure';
+mode='alpha';
+% mode='seizure';
 parameters = SetParametersJR(mode);
 parameters.dt = dt;
 A=parameters.A;
@@ -36,7 +36,7 @@ x0 = zeros(NStates,1);                   % initial state
 x = zeros(NStates,N); 
 x(:,1) = x0;
 
-QnonSingular = (sqrt(dt)*A*a*sigma)^2*eye(NStates);
+
 Q = zeros(NStates);
 Q(4,4) = (sqrt(dt)*A*a*sigma)^2;
 
@@ -67,7 +67,7 @@ y = H*x + w;
 % Prior distribution (defined by m0 & P0)
 %
 m0 = x0;
-P0 = F(x0)*QnonSingular*F(x0)';
+P0 = 100.^2*eye(NStates);
 
 
 % Apply EKF filter
@@ -75,8 +75,8 @@ P0 = F(x0)*QnonSingular*F(x0)';
 m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
 
 figure
-plot(t,x([1 3 5],:)'); hold on;
-plot(t,m([1 3 5],:)','--');
+plot(t,x([3 5],:)'); hold on;
+plot(t,m([3 5],:)','--');
 
 
 
@@ -96,10 +96,7 @@ pcrb=zeros(NStates,N);
 
 % Initalise all trajectories
 %
-xk=zeros(NStates,M);
-for i=1:M
-    xk(:,i)=mvnrnd(m0,P0)';
-end
+xk=mvnrnd(m0,P0,M)';
 
 % Closed form terms
 %
@@ -109,7 +106,7 @@ Rinv = H'*inv(R)*H;
 % Compute the PCRB using a Monte Carlo approximation
 %
 for k=2:N
-    Fhat = zeros(NStates,NStates);
+    Fhat = zeros(NStates);
     
     v = mvnrnd(zeros(NStates,1),Q,M)';
     parfor i=1:M
@@ -126,13 +123,12 @@ for k=2:N
         
     % Recursively compute the Fisher information matrix
     %
-    P(:,:,k) = Fhat*inv(inv(P(:,:,k-1)) + Rinv)*Fhat' + Q;
+    P(:,:,k) = inv( inv(Fhat*P(:,:,k-1)*Fhat' + Q) + Rinv);
     
     % Compute the PCRB at the current time
     %
     pcrb(:,k) = diag(P(:,:,k));
 end
-
 
 
 %% 
@@ -176,12 +172,12 @@ mse = error ./ num_trials;
 %% Plot MSE and the PCRB
 %
 figure
-semilogy(t,mse,'x-')
+semilogy(t,sqrt(mse([3 5],:)),'x-')
 hold on;
-semilogy(t,pcrb,'-','LineWidth',2);
+semilogy(t,sqrt(pcrb([3 5],:)),'-','LineWidth',2);
 title(mode);
 
 grid on;
 xlabel('Time (s)');
-ylabel('MSE');
+ylabel('RMSE');
 % export_fig(['../figures/nmm_pcrb_' mode '.pdf'])
