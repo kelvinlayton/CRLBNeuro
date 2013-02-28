@@ -5,7 +5,7 @@ close all
 % Define time
 %
 delta = 0.001;  % Sampling period
-N=4000;
+N=400;
 t=(0:N-1)*delta;
 
 % Transition model
@@ -17,12 +17,10 @@ F = @(x)model_pendulum(x,delta,'jacobian');
 %
 H = [1 0];
 
-% Define noise vectors
+% Define noise covariances
 %
-sigma_v = 0.001;  % Process noise
-sigma_w = 0.1;   % Measurement noise
-Q = sigma_v^2*[1 0; 0 1];
-R = sigma_w^2 .* eye(size(H,1));
+Q = (0.01)^2*[1 0; 0 1];         % Process noise
+R = (0.1)^2 .* eye(size(H,1));    % Measurement noise
 
 w = mvnrnd(zeros(size(R,1),1),R,N)';
 v = mvnrnd(zeros(size(Q,1),1),Q,N)';
@@ -69,63 +67,12 @@ legend({'x_1 - angle','x_2 - velocity','x_1 estimate','x_2 estimate'})
 
 M = 100;    % Number of Monte Carlo samples
 
-% Initialise variables
-%
-
-Qinv=inv(Q);
-Rinv=inv(R);
-J=zeros(2,2,N);
-J(:,:,1)=inv(P0);
-pcrb=zeros(2,N);
-fnorm=zeros(N,1);
-
-% Initalise all trajectories
-%
-% xk=mvnrnd(m0,P0,M)';
-xk=repmat(x0,1,M);
-
-% Compute the PCRB using a Monte Carlo approximation
-%
-for k=2:N
-    U = zeros(2,2);
-    V = zeros(2,2);
-    
-    v = mvnrnd([0 0]',Q,M)';
-    Fnorm=0;
-    parfor i=1:M
-        % Sample the next time point for the current trajectory realisation
-        %
-        xk(:,i) = f(xk(:,i)) + v(:,i);
-
-        % Compute the PCRB terms for the current trajectory realisation
-        %
-        Fhat = F(xk(:,i));
-        U = U + Fhat'*Qinv*Fhat;
-        V = V + -Fhat'*Qinv;
-        
-        Fnorm = Fnorm + norm(Fhat);
-    end
-    U=U./M;
-    V=V./M;
-    W=Qinv + H'*Rinv*H;
-    
-    % Recursively compute the Fisher information matrix
-    %
-    J(:,:,k) = W - V'*inv(J(:,:,k-1) + U)*V;
-
-    % Compute the PCRB at the curret time
-    %
-    pcrb(:,k) = diag(inv(J(:,:,k)));
-    
-    % Compute average size of F matrix
-    %
-    fnorm(k)=Fnorm./M;
-end
+pcrb = compute_pcrb_P(t,f,F,@(x)H,Q,R,m0,P0,M);
 
 
 %% Compute the MSE of the extended Kalman filter 
 %
-num_trials = 1000;
+num_trials = 100;
 error = zeros(2,N);
 
 parfor r=1:num_trials
@@ -134,7 +81,7 @@ parfor r=1:num_trials
     %
     v = mvnrnd([0 0]',Q,N)';
     x = zeros(2,N);
-    x(:,1)=x0; %mvnrnd(m0,P0)';
+    x(:,1)=mvnrnd(m0,P0)';
     for i=2:N
         x(:,i) = f(x(:,i-1)) + v(:,i);
     end
@@ -162,16 +109,16 @@ mse = error ./ num_trials;
 figure
 semilogy(t,sum(mse),'x-')
 hold on;
-semilogy(t,sum(pcrb),'-');
+semilogy(t,sum(pcrb),'o-');
 grid on;
 legend({'MSE','PCRB'})
 xlabel('Time (s)');
 ylabel('MSE');
 % export_fig('../figures/pendulum_pcrb.pdf')
 
-figure
-fnorm(1)=nan;
-plot(t,fnorm);
-grid on;
-xlabel('Time (s)');
-ylabel('Norm of F');
+% figure
+% fnorm(1)=nan;
+% plot(t,fnorm);
+% grid on;
+% xlabel('Time (s)');
+% ylabel('Norm of F');
