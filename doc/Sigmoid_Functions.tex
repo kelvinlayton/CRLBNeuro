@@ -1,0 +1,70 @@
+\documentclass{article}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{float} % For [H] placement
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\usepackage{booktabs}
+
+\usepackage[bookmarks=true,ocgcolorlinks=true,plainpages=false, breaklinks=true, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+%\hypersetup{bookmarks=false}  %hide the bookmarks bar
+%\hypersetup{bookmarksopen=false}  % expand tree of bookmarks or just show first level
+\hypersetup{linkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
+\hypersetup{colorlinks=true}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\allowdisplaybreaks
+
+\renewcommand{\vec}[1]{\ensuremath{{\boldsymbol #1}}}
+\newcommand{\mat}[1]{\ensuremath{\boldsymbol{#1}}}
+
+\DeclareMathOperator*{\erf}{erf}
+
+\title{PCRB}
+
+\date{\today}
+
+\begin{document}
+
+\section{Sigmoid functions}
+
+The sigmoid can be specified using the logistic function
+\begin{align}
+	g(x) = \frac{1}{1 + \exp(\varsigma(v_0 - x))}
+\end{align}
+which has the derivative
+\begin{align}
+	g'(x) = \varsigma g(x)(1 - g(x))
+\end{align}
+
+Alternatively, using the error function
+\begin{align}
+	g(x) = \frac{1}{2}\left( 1 + \erf\left( \frac{x - v_0}{\xi\sqrt{2}}\right)\right)
+\end{align}
+which has the derivative
+\begin{align}
+	g'(x) = \frac{1}{\xi\sqrt{2\pi}} \exp\left(-\left(\frac{x - v_0}{\xi\sqrt{2}}\right)^2 \right) 
+\end{align}
+
+\section{Relationship between widths}
+
+Through numerical simulation we can deduce that setting the error function width to
+\begin{align}
+	\xi = \frac{1.699}{\varsigma}
+\end{align}
+gives a sigmoid with approximately the same shape as a logistic function with width $\varsigma$. This relationship seems to hold across a wide range of widths. It is likely this number could be derived analytically.
+
+
+% \bibliography{../../library}
+
+
+
+\end{document}

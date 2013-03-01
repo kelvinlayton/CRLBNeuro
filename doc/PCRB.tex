@@ -1,6 +1,32 @@
 \documentclass{article}
 
-\input{latex_includes.tex}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{float} % For [H] placement
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\usepackage{booktabs}
+
+\usepackage[bookmarks=true,ocgcolorlinks=true,plainpages=false, breaklinks=true, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+%\hypersetup{bookmarks=false}  %hide the bookmarks bar
+%\hypersetup{bookmarksopen=false}  % expand tree of bookmarks or just show first level
+\hypersetup{linkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
+\hypersetup{colorlinks=true}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\allowdisplaybreaks
+
+\renewcommand{\vec}[1]{\ensuremath{{\boldsymbol #1}}}
+\newcommand{\mat}[1]{\ensuremath{\boldsymbol{#1}}}
+
+
 
 \title{PCRB}
 
@@ -12,11 +38,11 @@
 
 The model takes the form
 \begin{subequations}
+	\label{eqn:model_general}
 \begin{align}
-	\vec x_k &= \vec f(\vec x_{k-1}) + \vec v_k \\
+	\vec x_k &= \vec f_k(\vec x_{k-1}) + \vec v_k \\
 	\vec y_k &= \mat H\vec x_{k-1} + \vec w_k
 \end{align}
-\label{eqn:model_general}
 \end{subequations}
 where $\vec v_k$ and $\vec w_k$ are white, uncorrelated, zero mean Gaussian noise vectors with covariances of $\mat Q$ and $\mat R$, respectively. For this model the transition density is defined as
 \begin{align}
@@ -31,7 +57,7 @@ and the likelihood is
 
 \section{PCRB}
 
-The PCRB is computed from the Fisher information matrix computed on the joint density $p(\vec y,\vec x)$,
+The posterior Cram\'er-Rao bound (PCRB) is computed from the Fisher information matrix computed on the joint density $p(\vec y,\vec x)$,
 \begin{align}
 	\mat J &= \mathbb E\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right]
 \end{align}
@@ -76,14 +102,17 @@ Substituting these into \eqref{eqn:recursion_U}--\eqref{eqn:recursion_W} gives,
 	\mat W_k &= \mat H^T\mat R^{-1}\mat H + \mat Q^{-1}
 \end{align}
 
-When noise is only added to a subset of the states each transition, $\mat Q$ is singular and $\mat Q^{-1}$ does not exist. Another method is required.
+This method is not applicable when noise is only added to a subset of the states each transition. In this case, $\mat Q$ is singular and $\mat Q^{-1}$ does not exist. Another method is required.
 
 \subsection{Cramer-Rao bound recursion (singular $Q$)} 
 
-An alternative formulation is to recursively compute the bound at each step. That is, compute $\mat P_k = \mat J_k^{-1}$ directly rather than $\mat J_k$. The formulas suggested in \cite{Bergman2001} are applicable to wider class of models (e.g. multiplicative noise), denoted by a general transition function $\tilde{\vec f}(\vec x_k,\vec v_k)$. The recursion is
+An alternative formulation is to recursively compute the bound instead of the matrix, i.e., $\mat P_k = \mat J_k^{-1}$ directly rather than $\mat J_k$. The formulas suggested in \cite{Bergman2001} are applicable to wider class of models (e.g. multiplicative noise), denoted by a general transition function $\tilde{\vec f}(\vec x_k,\vec v_k)$. The recursion is
+\begin{subequations}
 \begin{align}
-	\mat P_k &= \bar{\mat F}_{k-1}\left(\mat P_{k-1}^{-1} + \bar{\mat R}_{k-1}^{-1}\right)^{-1}\bar{\mat F}_{k-1} + \bar{\mat G}_{k-1}\mat Q_k \bar{\mat G}_{k-1}^{-1}
+	\mat P_{k|k-1} &= \bar{\mat F}_k\mat P_{k-1|k-1}\bar{\mat F}_k + \bar{\mat G}_k\mat Q_k \bar{\mat G}_k^{-1} \\
+		\mat P_{k|k} &= \left(\mat P_{k|k-1}^{-1} + \bar{\mat R}_{k-1}^{-1}\right)^{-1}
 \end{align}
+\end{subequations}
 where
 \begin{align}
 	\bar{\mat F}_k &= \mathbb E \left[ \nabla_{\vec x_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
@@ -100,7 +129,7 @@ and $\mat P_0^{-1}$ is the inverse of the prior covariance. The model in \eqref{
 and the corresponding matrices to	
 \begin{align}
 	\bar{\mat F}_k &= \mathbb E\left[ \mat F_k(\vec x_k)\right] \label{eqn:pcrb_term_F}\\
-	\bar{\mat R}_k^{-1} &= -\mat H^T\mat R^{-1} \mat H \\
+	\bar{\mat R}_k^{-1} &= \mat H^T\mat R^{-1} \mat H \\
 	\bar{\mat G}_k &= \mat I_{d\times d} 
 \end{align}
 Notice that $\mat Q^{-1}$ is not directly required in the recursion, so this method is applicable to neural field models where process noise is only added to a single state.
@@ -116,6 +145,19 @@ or alternatively,
 \begin{align}
 	\bar{\mat F}_{k-1} &\approx \frac{1}{M}\sum_{i=1}^M \mat F(\vec x_{k-1}^{(i)})
 \end{align}
+
+\subsection{Analytical evaluation of expectations}
+
+For the JR model the expectation in \eqref{eqn:pcrb_term_F} above is
+\begin{align}
+	\bar{\mat F}_k &= \mathbb E\left[ \mat F_k(\vec x_k)\right] \\
+	&= \mat F_k^{\rm (lin)} + \mathbb E\left[ \mat G_k(\vec x_k)\right] 
+\end{align}
+where $\mat G_k(\vec x_k)$ contains the nonlinear component of the Jacobian. These nonlinear terms are derivatives of the error function and have the form,
+\begin{align}
+	\exp(-(x-v_0)^2/\zeta^2)
+\end{align}
+The expectation of such terms can only be evaluated when we know the prior mean and covariance at all times.
 
 
 \section{Pendulum example}

@@ -1,0 +1,84 @@
+\documentclass{article}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{float} % For [H] placement
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\usepackage{booktabs}
+
+\usepackage[bookmarks=true,ocgcolorlinks=true,plainpages=false, breaklinks=true, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+%\hypersetup{bookmarks=false}  %hide the bookmarks bar
+%\hypersetup{bookmarksopen=false}  % expand tree of bookmarks or just show first level
+\hypersetup{linkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
+\hypersetup{colorlinks=true}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\allowdisplaybreaks
+
+\renewcommand{\vec}[1]{\ensuremath{{\boldsymbol #1}}}
+\newcommand{\mat}[1]{\ensuremath{\boldsymbol{#1}}}
+
+
+\title{Statistical performance analysis of neural mass models?}
+\date{\today}
+
+\begin{document}
+
+
+\section{Introduction}
+
+History of models and estimation attempts
+
+Usefulness of bound: benchmark algorithms, experimental design, insight about inherent uncertainty -- which do we address
+
+\section{Background}
+
+Present 3 models?
+
+\section{Theory / Performance Bounds}
+
+Introduce recursive computation of bound and Monte Carlo approximation
+
+\section{Methods?}
+
+\section{Results}
+
+\subsection{Effect of increasing model complexity -- bound should increase}
+
+e.g. Bound for model A > model B > model C
+
+\subsection{Effect of parameters changing -- bound should change}
+
+e.g. seizure easier to estimate than alpha rhythms
+
+\subsection{Effect of measurement noise? -- pretty boring}
+
+e.g. scalp EEG vs iEEG?
+
+\subsection{Augmented models (joint estimation of parameters and states)?}
+
+\section{Discussion}
+
+extensions to other applications e.g. experimental design
+
+contextualize work w.r.t. existing literature?
+
+\section{Conclusion}
+
+
+% \small
+% \bibliographystyle{ieeetr}
+% \bibliography{references}
+
+
+
+
+\end{document}

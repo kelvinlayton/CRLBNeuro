@@ -10,8 +10,8 @@ params = SetParametersJR('alpha');
 params.dt = dt;
 
 NStates = 6;                           
-f = @(x)model_JR(x,'transition',params);
-F = @(x)model_JR(x,'jacobian',params);
+f = @(x)model_JR_erf(x,'transition',params);
+F = @(x)model_JR_erf(x,'jacobian',params);
 
 rng(0);
 

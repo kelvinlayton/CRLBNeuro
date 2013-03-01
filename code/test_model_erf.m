@@ -1,0 +1,132 @@
+% This code compares the output from the JR model using different sigmoid
+% functions. A slow drift in the states exists over time but the basic
+% behaviour is very similar.
+%
+
+
+N = 1000;             	% number of samples
+dT = 0.001;          	% sampling time step (global)
+dt = 1*dT;            	% integration time step
+nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)
+
+t = 0:dt:(N-1)*dt;
+
+% Intial true parameter values
+%
+% mode='alpha';
+mode='seizure';
+parameters = SetParametersJR(mode);
+parameters.dt = dt;
+A=parameters.A;
+a=parameters.a;
+sigma=parameters.sigma;
+
+% Initialise random number generator for repeatability
+%
+rng(0);
+
+% Transition model using logistic sigmoid
+%
+NStates = 6;                           
+f = @(x)model_JR(x,'transition',parameters);
+F = @(x)model_JR(x,'jacobian',parameters);
+
+% Initialise trajectory state
+%
+x0 = zeros(NStates,1);                   % initial state
+x = zeros(NStates,N); 
+x(:,1) = x0;
+
+QnonSingular = (sqrt(dt)*A*a*sigma)^2*eye(NStates);
+Q = zeros(NStates);
+Q(4,4) = (sqrt(dt)*A*a*sigma)^2;
+
+R = 1^2*eye(1);
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Generate trajectory
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% Define input
+%
+v = mvnrnd(zeros(NStates,1),Q,N)';
+
+% Euler-Maruyama integration
+%
+for n=1:N-1
+    x(:,n+1) = f(x(:,n))  + v(:,n);
+end
+
+H = [0 0 1 0 -1 0];           % observation function
+w = mvnrnd(zeros(size(H,1),1),R,N)';
+y = H*x + w;
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Run EKF
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% Prior distribution (defined by m0 & P0)
+%
+m0 = x0;
+P0 = F(x0)*QnonSingular*F(x0)';
+
+
+% Apply EKF filter
+%
+m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
+
+figure
+h1=plot(t,x([3 5],:)'); hold on;
+h2=plot(t,m([3 5],:)','--');
+
+
+%% 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Calculate the trajectory for ERF equivalent model
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+% Initialise random number generator for repeatability
+%
+rng(0);
+
+% Transition model using error function sigmoid
+%
+NStates = 6;                           
+f = @(x)model_JR_erf(x,'transition',parameters);
+F = @(x)model_JR_erf(x,'jacobian',parameters);
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Generate trajectory
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+x2 = zeros(NStates,N); 
+x2(:,1) = x0;
+
+% Define input
+%
+v = mvnrnd(zeros(NStates,1),Q,N)';
+
+% Euler-Maruyama integration
+%
+for n=1:N-1
+    x2(:,n+1) = f(x2(:,n))  + v(:,n);
+end
+
+w = mvnrnd(zeros(size(H,1),1),R,N)';
+y = H*x2 + w;
+
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Run EKF
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+% Apply EKF filter
+%
+m2 = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
+
+hold on
+h1=plot(t,x2([3 5],:)'); hold on;
+h2=plot(t,m2([3 5],:)','--');
+set([h1(1) h2(1)],'Color',[1 0.5 0]);
+set([h1(2) h2(2)],'Color','m');
+

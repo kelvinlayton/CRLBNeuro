@@ -15,13 +15,13 @@ close all
 
 % Define time
 %
-delta = 0.01;  % Sampling period
+delta = 0.1;  % Sampling period
 t=0:delta:4;
 N=length(t);
 
 % Transition model (linear)
 %
-F = [1, delta; 0 1];
+F = [1.5, delta; 0 1.5];
 f = @(x)(F*x);
 Ffunc = @(x)F;
 
@@ -31,7 +31,7 @@ H = [1 0];
 
 % Define noise vectors
 %
-sigma_v = 0.01;  % Process noise
+sigma_v = 1;  % Process noise
 sigma_w = 1;   % Measurement noise
 
 Q = sigma_v^2*[1 0; 0 1];   % Non-singular Q - either recursion works
@@ -43,7 +43,7 @@ R = sigma_w^2 .* eye(size(H,1));
 %
 x0 = [3; 0];
 m0 = x0;
-P0 = diag([(pi)^2 (pi)^2]);
+P0 = diag(100*[(pi)^2 (pi)^2]);
 
 %% 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,8 +56,11 @@ P0 = diag([(pi)^2 (pi)^2]);
 pcrb=zeros(2,N);
 pcrb2=zeros(2,N);
 J=zeros(2,2,N);
-P=zeros(2,2,N);
-P(:,:,1)=P0;
+Pprior=zeros(2,2,N);
+Pprior(:,:,1)=P0;
+
+Pprior2=zeros(2,2,N);
+Pprior2(:,:,1)=P0;
 J(:,:,1)=inv(P0);
 
 % Compute the PCRB using closed form expressions
@@ -69,18 +72,33 @@ W = inv(Q) + H'*inv(R)*H;
 Rinv = H'*inv(R)*H;
 G = eye(2);
 
+
+Ppost=zeros(2,2,N);
+Ppost(:,:,1)=P0;  % P_{0|0}
+
 for k=2:N
     
     % Recursively compute the Fisher information matrix
     %
     J(:,:,k) = W - V'*inv(J(:,:,k-1) + U)*V;
-    P(:,:,k) = F*inv(inv(P(:,:,k-1)) + Rinv)*F' + G*Q*inv(G);
+   
+    % P_{1|0}
+    Pprior(:,:,k) = F*Ppost(:,:,k-1)*F' + Q;
+    
+    % P_{1|1}
+    Ppost(:,:,k) = inv( inv(Pprior(:,:,k)) + Rinv);
+    
     % Compute the PCRB at the curret time
     %
     pcrb(:,k) = diag(inv(J(:,:,k)));
-    pcrb2(:,k) = diag(P(:,:,k));
+    pcrb2(:,k) = diag(Ppost(:,:,k));
+
 end
+% pcrb2(:,end)=[];
+norm(pcrb-pcrb2)./norm(pcrb2)
 
 semilogy(t,pcrb);
 hold on;
 semilogy(t,pcrb2,'x');
+semilogy(t,abs(pcrb-pcrb2),'r');
+% semilogy(t,abs(pcrb-pcrb3),'.-');
