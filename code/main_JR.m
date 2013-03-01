@@ -87,48 +87,7 @@ plot(t,m([3 5],:)','--');
 
 M = 1000;    % Number of Monte Carlo samples
 
-% Initialise variables
-%
-
-P=zeros(NStates,NStates,N);
-P(:,:,1)=P0;
-pcrb=zeros(NStates,N);
-
-% Initalise all trajectories
-%
-xk=mvnrnd(m0,P0,M)';
-
-% Closed form terms
-%
-Rinv = H'*inv(R)*H;
-
-
-% Compute the PCRB using a Monte Carlo approximation
-%
-for k=2:N
-    Fhat = zeros(NStates);
-    
-    v = mvnrnd(zeros(NStates,1),Q,M)';
-    parfor i=1:M
-        % Sample the next time point for the current trajectory realisation
-        %
-        xk(:,i) = f(xk(:,i)) + v(:,i);
-
-        % Compute the PCRB terms for the current trajectory realisation
-        %
-        Fhat = Fhat + F(xk(:,i));
-        
-    end
-    Fhat=Fhat./M;
-        
-    % Recursively compute the Fisher information matrix
-    %
-    P(:,:,k) = inv( inv(Fhat*P(:,:,k-1)*Fhat' + Q) + Rinv);
-    
-    % Compute the PCRB at the current time
-    %
-    pcrb(:,k) = diag(P(:,:,k));
-end
+pcrb = compute_pcrb_P(t,f,F,@(x)H,Q,R,m0,P0,M);
 
 
 %% 

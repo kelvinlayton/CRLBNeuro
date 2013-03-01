@@ -21,14 +21,14 @@ N=length(t);
 
 % Transition model (linear)
 %
-F = [1.5, delta; 0 1.5];
-f = @(x)(F*x);
-Ffunc = @(x)F;
+Fmat = [1.5, delta; 0 1.5];
+f = @(x)(Fmat*x);
+F = @(x)Fmat;
 
 % Observation matrix (only observe position)
 %
-H = [1 0];
-
+Hmat = [1 0];
+H = @(x)Hmat;
 % Define noise vectors
 %
 sigma_v = 1;  % Process noise
@@ -37,7 +37,7 @@ sigma_w = 1;   % Measurement noise
 Q = sigma_v^2*[1 0; 0 1];   % Non-singular Q - either recursion works
 % Q = sigma_v^2*[1 0; 0 0];   % Singular Q - must use Bergman recursion
 
-R = sigma_w^2 .* eye(size(H,1));
+R = sigma_w^2 .* eye(size(Hmat,1));
 
 % Prior distribution
 %
@@ -45,9 +45,29 @@ x0 = [3; 0];
 m0 = x0;
 P0 = diag(100*[(pi)^2 (pi)^2]);
 
+
 %% 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute the posterior Cramer-Rao bound (PCRB)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+M = 1000;
+
+crb1 = compute_pcrb_J(t,f,F,H,Q,R,m0,P0,M);
+crb2 = compute_pcrb_P(t,f,F,H,Q,R,m0,P0,M);
+
+norm(crb1-crb2)
+
+figure
+semilogy(t,crb1,'-o');
+hold on;
+semilogy(t,crb2,'-x');
+
+
+return
+
+%% 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Test algorithm details
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -65,11 +85,11 @@ J(:,:,1)=inv(P0);
 
 % Compute the PCRB using closed form expressions
 %
-U = F'*inv(Q)*F;
-V = -F'*inv(Q);
-W = inv(Q) + H'*inv(R)*H;
+U = Fmat'*inv(Q)*Fmat;
+V = -Fmat'*inv(Q);
+W = inv(Q) + Hmat'*inv(R)*Hmat;
 
-Rinv = H'*inv(R)*H;
+Rinv = Hmat'*inv(R)*Hmat;
 G = eye(2);
 
 
@@ -83,7 +103,7 @@ for k=2:N
     J(:,:,k) = W - V'*inv(J(:,:,k-1) + U)*V;
    
     % P_{1|0}
-    Pprior(:,:,k) = F*Ppost(:,:,k-1)*F' + Q;
+    Pprior(:,:,k) = Fmat*Ppost(:,:,k-1)*Fmat' + Q;
     
     % P_{1|1}
     Ppost(:,:,k) = inv( inv(Pprior(:,:,k)) + Rinv);
