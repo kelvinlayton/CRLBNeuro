@@ -75,17 +75,22 @@ P0 = 100.^2*eye(NStates);
 m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
 
 figure
+ax1=subplot(211);
 plot(t,x([3 5],:)'); hold on;
 plot(t,m([3 5],:)','--');
+ax2=subplot(212);
+plot(t,y)
 
+linkaxes([ax1 ax2],'x');
 
+return
 
 %% 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute the posterior Cramer-Rao bound (PCRB)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-M = 1000;    % Number of Monte Carlo samples
+M = 100;    % Number of Monte Carlo samples
 
 pcrb = compute_pcrb_P(t,f,F,@(x)H,Q,R,m0,P0,M);
 
@@ -96,7 +101,7 @@ pcrb = compute_pcrb_P(t,f,F,@(x)H,Q,R,m0,P0,M);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 %
-num_trials = 100;
+num_trials = 10;
 error = zeros(NStates,N);
 
 parfor r=1:num_trials
@@ -131,8 +136,8 @@ mse = error ./ num_trials;
 %% Plot MSE and the PCRB
 %
 figure
-semilogy(t,sqrt(mse([3 5],:)),'x-')
-hold on;
+% semilogy(t,sqrt(sum(mse([3 5],:))),'x-')
+% hold on;
 semilogy(t,sqrt(pcrb([3 5],:)),'-','LineWidth',2);
 title(mode);
 
