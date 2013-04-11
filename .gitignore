@@ -15,6 +15,6 @@
 scratch/*
 
 # Output PDF files
-*/manuscript.pdf
-*/PCRB.pdf
-*/Sigmoid_Functions.pdf
+doc/PCRB.pdf
+doc/Sigmoid_Functions.pdf
+manuscript/manuscript.pdf
