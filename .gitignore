@@ -7,5 +7,5 @@
 *.synctex
 *.synctex.gz
 
+scratch/*
 *.DS_Store
-
