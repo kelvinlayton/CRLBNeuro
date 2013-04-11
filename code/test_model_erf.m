@@ -68,10 +68,9 @@ y = H*x + w;
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % Prior distribution (defined by m0 & P0)
-%
-m0 = x0;
-P0 = F(x0)*QnonSingular*F(x0)';
 
+m0 = x0;
+P0 = F(x0)*QnonSingular*F(x0)';             
 
 % Apply EKF filter
 %
