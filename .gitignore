@@ -1,3 +1,4 @@
+# Latex build files
 *.aux
 *.bbl
 *.blg
@@ -6,7 +7,14 @@
 *.out
 *.synctex
 *.synctex.gz
+
 *.DS_Store
 .DS_Store
+
+# A folder used for temp files not to be added
 scratch/*
 
+# Output PDF files
+*/manuscript.pdf
+*/PCRB.pdf
+*/Sigmoid_Functions.pdf
