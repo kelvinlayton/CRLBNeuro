@@ -5,24 +5,24 @@ close all
 % Define time
 %
 delta = 0.01;  % Sampling period
-t=0:delta:4;
+t=(0:delta:4)';
 N=length(t);
 
 % Transition model (linear)
 %
-F = [1, delta; 0 1];
+F = [1, delta, 1; 0 1 0; 0 0 1];
 f = @(x)(F*x);
 Ffunc = @(x)F;
 
 % Observation matrix (only observe position)
 %
-H = [1 0];
+H = [1 0 0];
 
 % Define noise vectors
 %
 sigma_v = 0.01;  % Process noise
 sigma_w = 0.1;   % Measurement noise
-Q = sigma_v^2*[1 0; 0 1];
+Q = sigma_v^2*eye(3);
 R = sigma_w^2 .* eye(size(H,1));
 
 w = mvnrnd(zeros(size(R,1),1),R,N)';
@@ -30,7 +30,7 @@ v = mvnrnd(zeros(size(Q,1),1),Q,N)';
 
 % Starting state
 %
-x0 = [3; 0];
+x0 = [3; 0; 0.5];
 
 % Calculate state trajectory
 %
@@ -47,7 +47,7 @@ z = H*x + w;
 % Prior distribution (defined by m0 & P0)
 %
 m0 = x0;
-P0 = diag([(2*pi)^2 (2*pi)^2]);
+P0 = diag([(2*pi)^2 (2*pi)^2 (2*pi)^2]);
 
 % Apply EKF filter
 %
@@ -64,14 +64,14 @@ grid on;
 legend({'x_1 - position','x_2 - velocity','x_1 estimate','x_2 estimate'})
 % export_fig('../figures/motion_trajectory.pdf')
 
-
+return
 %% Compute the posterior Cramer-Rao bound (PCRB)
 %
 
 % Initialise variables
 %
-pcrb=zeros(2,N);
-J=zeros(2,2,N);
+pcrb=zeros(3,N);
+J=zeros(3,3,N);
 J(:,:,1)=inv(P0);
 
 % Compute the PCRB using closed form expressions
@@ -99,22 +99,22 @@ D21 = -F*inv(Q);
 D12 = D21';
 D22 = inv(Q) + H'*inv(R)*H;
 
-Jss = dare(inv(D11)*D12,eye(2),D22-D21*inv(D11)*D12,D11);
+Jss = dare(inv(D11)*D12,eye(3),D22-D21*inv(D11)*D12,D11);
 
 pcrb_ss = diag(inv(Jss))
 
 
 %% Compute the MSE of the extended Kalman filter 
 %
-num_trials = 1000;
-error = zeros(2,N);
+num_trials = 100;
+error = zeros(3,N);
 
 parfor r=1:num_trials
     
     % Create new trajectory realisation
     %
-    v = mvnrnd([0 0]',Q,N)';
-    x = zeros(2,N);
+    v = mvnrnd([0 0 0]',Q,N)';
+    x = zeros(3,N);
     x(:,1)=mvnrnd(m0,P0)';
     for i=2:N
         x(:,i) = f(x(:,i-1)) + v(:,i);
@@ -144,7 +144,7 @@ figure
 semilogy(t,mse,'x-')
 hold on;
 semilogy(t,pcrb,'-');
-semilogy(t,pcrb_ss*ones(size(t)),'r-');
+% semilogy(t,pcrb_ss*ones(size(t)),'r-');
 grid on;
 legend({'MSE x_1','MSE x_2','PCRB x_1','PCRB x_2'})
 xlabel('Time (s)');

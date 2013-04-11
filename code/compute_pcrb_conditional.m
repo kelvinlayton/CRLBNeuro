@@ -19,21 +19,26 @@
 % Kelvin Layton
 % Feb 2013
 %
-function pcrb = compute_pcrb_P(t,f,F,H,Q,R,m0,P0,M)
+function pcrb = compute_pcrb_conditional(t,f,F,H,Q,R,m0,P0,theta,M)
 
 N = length(t);
 Nstates=length(m0);
+Nparams=length(theta);
+Nunknown=Nstates+Nparams;
 
 % Initialise variables
 %
+P0all = blkdiag(P0,inf*ones(Nparams,Nparams));
+P=zeros(Nunknown,Nunknown,N);
+P(:,:,1)=P0all;
 
-P=zeros(Nstates,Nstates,N);
-P(:,:,1)=P0;
-pcrb=zeros(Nstates,N);
+pcrb=zeros(Nunknown,N);
+
 
 % Initalise all trajectories
 %
 xk=mvnrnd(m0,P0,M)';
+xk=[xk; bsxfun(@times,theta,ones(1,M))];
 
 Rinv=inv(R);
 
@@ -42,10 +47,10 @@ Rinv=inv(R);
 % Compute the PCRB using a Monte Carlo approximation
 %
 for k=2:N
-    Fhat = zeros(Nstates);
-    Rinvhat = zeros(Nstates);
+    Fhat = zeros(Nunknown);
+    Rinvhat = zeros(Nunknown);
     
-    v = mvnrnd(zeros(Nstates,1),Q,M)';
+    v = mvnrnd(zeros(Nunknown,1),Q,M)';
     parfor i=1:M
         % Sample the next time point for the current trajectory realisation
         %
@@ -62,9 +67,6 @@ for k=2:N
     Fhat=Fhat./M;
     Rinvhat=Rinvhat./M;
         
-%     Fnorm(k)=norm(Fhat);
-%     Feig(k) = min(eig(Fhat));
-    
     % Recursively compute the Fisher information matrix
     %
     P(:,:,k) = inv( inv(Fhat*P(:,:,k-1)*Fhat' + Q) + Rinvhat);

@@ -40,8 +40,8 @@ The model takes the form
 \begin{subequations}
 	\label{eqn:model_general}
 \begin{align}
-	\vec x_k &= \vec f_k(\vec x_{k-1}) + \vec v_k \\
-	\vec y_k &= \mat H\vec x_{k-1} + \vec w_k
+	\vec x_k &= \vec f_{k-1}(\vec x_{k-1}) + \vec v_k \\
+	\vec y_k &= \mat H\vec x_k + \vec w_k
 \end{align}
 \end{subequations}
 where $\vec v_k$ and $\vec w_k$ are white, uncorrelated, zero mean Gaussian noise vectors with covariances of $\mat Q$ and $\mat R$, respectively. For this model the transition density is defined as
@@ -55,13 +55,22 @@ and the likelihood is
 	&= (2\pi)^{-n/2} |\mat R|^{-1/2} \exp\left(-\frac{1}{2}(\vec y_k - \mat H\vec x_k)^T \mat R^{-1} (\vec y_k - \mat H\vec x_k) \right)
 \end{align}
 
+\section{Classical CRB}
+
+The Fisher information matrix is
+\begin{align}
+	\mat J_{\rm F}(\vec x) &= \mathbb E_{\vec y| \vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) \right]
+\end{align}
+Notice only the likelihood is used since no prior statistics exist for the unknown parameters/state $\vec x$.
+
 \section{PCRB}
 
 The posterior Cram\'er-Rao bound (PCRB) is computed from the Fisher information matrix computed on the joint density $p(\vec y,\vec x)$,
 \begin{align}
-	\mat J &= \mathbb E\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right]
+	\mat J &= \mathbb E_{x,y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right] \\
+	&= \mathbb E_{x,y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) \right] + \mathbb E_{x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec x) \right]
 \end{align}
-where the expectation is taken over $\vec y$ and $\vec x$. The PCRB bounds the covariance of an unbiased estimator, $\mat P$,
+where the expectation is taken over $\vec y$ and $\vec x$ in the first term and $\vec x$ for the second term. The PCRB bounds the covariance of an unbiased estimator, $\mat P$,
 \begin{align}
 	\mat P &\ge \mat J^{-1}
 \end{align}
@@ -132,6 +141,11 @@ and the corresponding matrices to
 	\bar{\mat R}_k^{-1} &= \mat H^T\mat R^{-1} \mat H \\
 	\bar{\mat G}_k &= \mat I_{d\times d} 
 \end{align}
+Therefore the final recursion is
+\begin{align}
+	\mat J_{k|k} = \left( \mat Q + \bar{\mat F}_{k-1} \mat J_{k-1}^{-1} \bar{\mat F}_{k-1}^T\right)^{-1} + \mat H_k^T \mat R^{-1} \mat H_k
+\end{align}
+
 Notice that $\mat Q^{-1}$ is not directly required in the recursion, so this method is applicable to neural field models where process noise is only added to a single state.
 
 \subsection{Monte Carlo approximations}
@@ -159,23 +173,92 @@ where $\mat G_k(\vec x_k)$ contains the nonlinear component of the Jacobian. The
 \end{align}
 The expectation of such terms can only be evaluated when we know the prior mean and covariance at all times.
 
+\section{Hybrid CRB}
+
+In this formulation the unknown vector, $\vec x$ is composed of random unknown elements, $\vec z$, and deterministic unknown elements, $\vec \theta$. The hybrid Fisher information matrix is
+\begin{align}
+	\mat J &= \mathbb E_{y,z|\theta}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec z|\vec\theta) \right] \\
+	&= \mathbb E_{y,z|\theta}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec z,\vec\theta) \right] + \mathbb E_{z|\theta}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec z|\vec\theta) \right] \\
+	&= \mathbb E_{z|\theta}\left[ \mat J_{\rm F}(\vec x,\vec\theta) \right] + \mathbb E_{z|\theta}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec z|\vec\theta) \right]
+\end{align}
+where $\mat J_{\rm F}$ is the classical Fisher information matrix for deterministic parameters. Although we may place prior statistics on the unknown parameters, $\vec\theta$, for estimation purposes, that framework would not allow us to analyse the estimation uncertainty of particular parameter combinations.
+
+\subsection{Summary}
+
+
+\begin{table}[H]
+\caption{Different bound formulations}
+\label{tbl:bound_types}
+\centering
+\begin{tabular}{p{0.2\textwidth}p{0.4\textwidth}p{0.4\textwidth}}
+  \toprule
+  Bound & Details & Output  \\
+  \midrule
+Bayesian CRB & Features \begin{itemize}
+     \item Prior on $z$ 
+	\item Prior on $\theta$
+	\item Singular Q
+  \end{itemize} & Bound on $z$ and $\theta$ for different $R$, Number of samples, models, and uncertainty in unknown parameters (some notion of robustness to parameter estimates?)  \\
+Hybrid CRB & Features \begin{itemize}
+     \item Prior on $z$ 
+	\item Deterministic $\theta$
+	\item Singular Q
+  \end{itemize} & Bound on $z$ and $\theta$ for specific $\theta$  \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Hybrid example}
+
+\todo Need to derive recursion for hybrid state vector
+
+\section{Simple hybrid example}
+
+Consider the simple model $y_i = z t_i + \theta + w_i$ where $w_i$ is noise
+\begin{align}
+	\vec y = \left[\begin{array}{cc}
+	 				 1 & t_1 \\ \vdots & \vdots \\ 1 & t_n 
+					\end{array}\right] \left[\begin{array}{c}
+					 				 \theta \\ z
+									\end{array}\right] 	+ \vec w
+\end{align}
+Here $z$ is random parameter with prior $p_0 = \mathcal N(z_0,P_0)$, $\theta$ is deterministic unknown parameter, $w_i$ is random noise with distribution $\mathcal N(0,R)$.
+
+The information matrix is
+\begin{align}
+	J = J_{\rm D} + J_{\rm P}
+\end{align}
+where
+\begin{align}
+	J_{\rm P} = \left[\begin{array}{cc}
+	 				 0 & 0 \\ 0 & P_0^{-1} 
+					\end{array}\right]
+\end{align}
+The likelihood is
+\begin{align}
+	\log p(\vec y|\vec x) &= c_1 -\frac{1}{2}(\vec y - \mat H\vec x)^T \mat R^{-1} (\vec y - \mat H\vec x) \\
+-\nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) &= \mat H^T\mat R^{-1} \mat H \\
+J_{\rm D} &= \mat H^T\mat R^{-1}\mat H
+\end{align}
+
 
 \section{Pendulum example}
 
-Let $\vec x_k = [a_k\quad b_k]^T$ where $a_k$ is the pendulum angle and $b_k$ is the angular velocity,
+Let $\vec x_k = [a_k\quad b_k\quad g]^T$ where $a_k$ is the pendulum angle and $b_k$ is the angular velocity and $g$ is an unknown deterministic parameter.
 \begin{align}
 	\vec f(\vec x_{k}) &= \left[\begin{array}{c}
-								a_k + b_k\Delta \\ -b_k - g\sin(a_k)\Delta
+								a_k + b_k\Delta \\ b_k - g\sin(a_k)\Delta \\ g
 								\end{array}\right]
 \end{align}
 The linearisation used for the EKF is
 \begin{align}
-	\mat F(\vec x_{k}) &= \left[\begin{array}{cc}
-					1 & \Delta \\
-					-g\cos(a_k) & 1 \\
+	\mat F(\vec x_{k}) &= \left[\begin{array}{ccc}
+					1 & \Delta & 0\\
+					-g\cos(a_k)\Delta & 1 & -\sin(a_k)\Delta\\
+					0 & 0 & 1
 				\end{array}\right]
 \end{align}
-The observation matrix is $H=[1\quad 0]$, so that only the first state element is measured.
+The observation matrix is $H=[1\quad 0\quad 0]$, so that only the first state element is measured.
 
 \subsection{Simulations}
 

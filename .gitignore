@@ -6,3 +6,6 @@
 *.out
 *.synctex
 *.synctex.gz
+
+*.DS_Store
+
