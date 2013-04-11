@@ -6,6 +6,7 @@
 *.out
 *.synctex
 *.synctex.gz
-
-scratch/*
 *.DS_Store
+.DS_Store
+scratch/*
+
