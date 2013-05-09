@@ -5,7 +5,7 @@ close all
 % Define time
 %
 delta = 0.01;  % Sampling period
-t=(0:delta:4)';
+t=(0:delta:0.1)';
 N=length(t);
 
 % Transition model (linear)
@@ -94,6 +94,7 @@ end
 %% Solution to Ricatti equation
 %
 
+if 0
 D11 = F'*inv(Q)*F;
 D21 = -F*inv(Q);
 D12 = D21';
@@ -102,7 +103,7 @@ D22 = inv(Q) + H'*inv(R)*H;
 Jss = dare(inv(D11)*D12,eye(3),D22-D21*inv(D11)*D12,D11);
 
 pcrb_ss = diag(inv(Jss))
-
+end
 
 %% Compute the MSE of the extended Kalman filter 
 %

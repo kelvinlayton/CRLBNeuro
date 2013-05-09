@@ -54,7 +54,7 @@ z = Ha*x + w;
 m0 = [pi/2; 0];
 m0a = [m0; g];
 P0 = diag([(0.01*pi)^2 (0.01*pi)^2]);
-P0param = 1000^2;
+P0param = 10^2;
 P0a = blkdiag(P0,P0param);
 
 % Apply EKF filter
@@ -74,7 +74,7 @@ grid on;
 legend({'x_1 - angle','x_2 - velocity','x_1 estimate','x_2 estimate'},'Location','Best')
 % export_fig('../figures/pendulum_trajectory.pdf')
 
-
+return
 %% Compute the posterior Cramer-Rao bound (PCRB)
 %
 
@@ -82,7 +82,7 @@ M = 10000;    % Number of Monte Carlo samples
 
 pcrb = compute_pcrb_P(t,f,F,@(x)H,Q,R,m0,P0,M);
 pcrb_a = compute_pcrb_P(t,fa,Fa,@(x)Ha,Qa,R,m0a,P0a,M);
-% pcrb2 = compute_pcrb_conditional(t,fa,Fa,@(x)Ha,Qa,R,m0(1:2),P0(1:2,1:2),g,M);
+pcrb2 = compute_pcrb_conditional(t,fa,Fa,@(x)Ha,Qa,R,m0(1:2),P0(1:2,1:2),g,M);
 
 return
 
@@ -127,6 +127,7 @@ figure
 % semilogy(t,(mse),'x-')
 semilogy(t,(pcrb),'o-'); hold on;
 semilogy(t,(pcrb_a),'s-');
+semilogy(t,(pcrb2),'d-');
 grid on;
 legend({'MSE','PCRB'})
 xlabel('Time (s)');
