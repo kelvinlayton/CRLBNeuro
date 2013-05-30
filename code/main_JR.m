@@ -1,6 +1,5 @@
 % This code repricates the structure of the Voss / Schiff FN simulation /
 % estimation
-%
 
 
 N = 1000;             	% number of samples
@@ -11,7 +10,6 @@ nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integratio
 t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
-%
 mode='alpha';
 % mode='seizure';
 parameters = SetParametersJR(mode);
