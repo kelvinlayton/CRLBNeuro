@@ -1,6 +1,8 @@
 % This code repricates the structure of the Voss / Schiff FN simulation /
 % estimation
-
+clc
+close all
+clear
 
 N = 10000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)

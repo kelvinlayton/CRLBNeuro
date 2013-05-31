@@ -29,7 +29,7 @@ z_e2 = x(4);        % derivative of the above
 v_i = x(5);         % inhibitory memrane voltage induced from excitatory input
 z_i = x(6);         % derivative of above
 
-v_e = v_e1 - v_e2;      % total membrane potential of excitatory population
+v_e = v_e1 - v_e2;      % total membrane potential of excitatory population - just used in sigmoid
 
 f_v_i = 2*e_0 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
 f_v_e = 2*e_0 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population

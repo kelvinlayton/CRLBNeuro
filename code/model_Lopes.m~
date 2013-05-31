@@ -29,16 +29,24 @@ z_e2 = x(4);        % derivative of the above
 v_i = x(5);         % inhibitory memrane voltage induced from excitatory input
 z_i = x(6);         % derivative of above
 
-f_v_i = 
-f_v_e = 2*e_0 ./ (1 + exp(
+v_e = v_e1 - v_e2;      % total membrane potential of excitatory population - just used in sigmoid
 
-v_e1_tplus1 = z_e1*dt + v_e1;
-z_e1_tplus1 = (-2*a*z_e1 - a^2*v_e1 + a*A*mu)*dt + z_e1;
+f_v_i = 2*e_0 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
+f_v_e = 2*e_0 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population
 
-v_e2_tplus1 = z_e2*dt + v_e2;
-z_e2_tplus1 = (-2*b*z_e2 - b^2*v_e2 + b*B*C2*f_v_i)*dt + z_e2;
+if mode(1)=='t';
+    
+    v_e1_tplus1 = z_e1*dt + v_e1;
+    z_e1_tplus1 = (-2*a*z_e1 - a^2*v_e1 + a*A*mu)*dt + z_e1;
 
-v_i_tplus1 = z_i*dt + v_i;
-z_i_tplus1 = (-2*a*z_i - a^2*v_i + a*A*C1*f_v_e)*dt + z_i;
+    v_e2_tplus1 = z_e2*dt + v_e2;
+    z_e2_tplus1 = (-2*b*z_e2 - b^2*v_e2 + b*B*C2*f_v_i)*dt + z_e2;
+
+    v_i_tplus1 = z_i*dt + v_i;
+    z_i_tplus1 = (-2*a*z_i - a^2*v_i + a*A*C1*f_v_e)*dt + z_i;
+
+    out = [v_e1_tplus1 z_e1_tplus1 v_e2_tplus1 z_e2_tplus1 v_i_tplus1 z_i_tplus1]';
+    
+end
 
 

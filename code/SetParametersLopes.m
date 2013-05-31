@@ -12,7 +12,7 @@ switch mode
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         % this set is for alpha rhythm
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        params.mu = 220;        % this is just the mean when this function is used in estimation
+        params.mu = 450;        % this is just the mean when this function is used in estimation
         params.sigma = 5.74;
         
         % get current parameters
