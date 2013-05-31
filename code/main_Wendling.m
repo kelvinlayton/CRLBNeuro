@@ -1,6 +1,8 @@
 % This code repricates the structure of the Voss / Schiff FN simulation /
 % estimation
-
+clc
+close all
+clear
 
 N = 10000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
@@ -11,7 +13,7 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 mode='alpha';
-parameters = SetParametersLopes(mode);
+parameters = SetParametersWendling(mode);
 parameters.dt = dt;
 A = parameters.A;
 a = parameters.a;
@@ -23,8 +25,8 @@ rng(0);
 
 % Transition model
 %
-NStates = 6;                           
-f = @(x)model_Lopes(x,'transition',parameters);
+NStates = 10;                           
+f = @(x)model_Wendling(x,'transition',parameters);
 
 % Initialise trajectory state
 %
@@ -34,9 +36,8 @@ x(:,1) = x0;
 
 
 Q = zeros(NStates);
-Q(2,2) = (sqrt(dt)*A*a*sigma)^2;
+Q(4,4) = (sqrt(dt)*A*a*sigma)^2;
 
-R = 1^2*eye(1);
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Generate trajectory
@@ -52,7 +53,8 @@ for n=1:N-1
     x(:,n+1) = f(x(:,n))  + v(:,n);
 end
 
-H = [1 0 -1 0 0 0];           % observation function
+H = [1 0 -1 0 -1 0 0 0 0 0];           % observation function
+R = 1^2*eye(1);
 w = mvnrnd(zeros(size(H,1),1),R,N)';
 y = H*x + w;
 
