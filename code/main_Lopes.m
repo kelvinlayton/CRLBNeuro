@@ -4,7 +4,7 @@ clc
 close all
 clear
 
-N = 10000;             	% number of samples
+N = 2000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
 nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)

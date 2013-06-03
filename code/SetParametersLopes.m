@@ -12,9 +12,12 @@ switch mode
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         % this set is for alpha rhythm
         % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        % there is a bifurcation here at mu = 450 ish.
+        
         params.mu = 450;        % this is just the mean when this function is used in estimation
         params.sigma = 5.74;
-        
+%         params.sigma = 3.46;
+
         % get current parameters
         params.e_0 = 2.5;        % maximal firing parameter
         params.v_0 = 6;        % firing threshold
