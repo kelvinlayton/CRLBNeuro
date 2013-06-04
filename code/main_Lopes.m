@@ -27,6 +27,7 @@ rng(0);
 %
 NStates = 6;                           
 f = @(x)model_Lopes(x,'transition',parameters);
+F = @(x)model_Lopes(x,'jacobian',parameters);
 
 % Initialise trajectory state
 %
@@ -58,5 +59,28 @@ R = 1^2*eye(1);
 w = mvnrnd(zeros(size(H,1),1),R,N)';
 y = H*x + w;
 
+% figure
+% plot(H*x)
+
+%% Run EKF for this model
+
+% Prior distribution (defined by m0 & P0)
+%
+m0 = x0;
+P0 = 100.^2*eye(NStates);
+
+
+% Apply EKF filter
+%
+m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
+
 figure
-plot(H*x)
+ax1=subplot(211);
+plot(t,x([1 3],:)'); hold on;
+plot(t,m([1 3],:)','--');
+ax2=subplot(212);
+plot(t,y)
+
+linkaxes([ax1 ax2],'x');
+
+return

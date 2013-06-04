@@ -12,10 +12,10 @@ nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integratio
 t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
-mode = 'background';
-mode = 'alpha';       % this is more like alpha!!!
-% mode = 'spikes';
-parameters = SetParametersWendling(mode)
+% mode = 'background';
+% mode = 'alpha';       % this is more like alpha!!!
+mode = 'spikes';
+parameters = SetParametersWendling(mode);
 parameters.dt = dt;
 A = parameters.A;
 a = parameters.a;
@@ -27,6 +27,7 @@ rng(0);
 % Transition model
 NStates = 10;                           
 f = @(x)model_Wendling(x,'transition',parameters);
+F = @(x)model_Wendling(x,'jacobian',parameters);
 
 % Initialise trajectory state
 x0 = zeros(NStates,1);                   % initial state
@@ -54,5 +55,26 @@ R = 1^2*eye(1);
 w = mvnrnd(zeros(size(H,1),1),R,N)';
 y = H*x + w;
 
+% figure
+% plot(t,-H*x)
+
+%% Run EKF for this model
+
+% Prior distribution (defined by m0 & P0)
+%
+m0 = x0;
+P0 = 100.^2*eye(NStates);
+
+
+% Apply EKF filter
+%
+m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
+
 figure
-plot(t,-H*x)
+ax1=subplot(211);
+plot(t,x([3 5 7],:)'); hold on;
+plot(t,m([3 5 7],:)','--');
+ax2=subplot(212);
+plot(t,y)
+
+linkaxes([ax1 ax2],'x');

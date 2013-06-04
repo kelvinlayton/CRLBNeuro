@@ -7,11 +7,14 @@
 *.out
 *.synctex
 *.synctex.gz
+*.m~
+*~
+*.bak
 
 *.DS_Store
 .DS_Store
 
-<<<<<<< HEAD
+
 *.pdf
 =======
 # A folder used for temp files not to be added
@@ -21,4 +24,3 @@ scratch/*
 doc/PCRB.pdf
 doc/Sigmoid_Functions.pdf
 manuscript/manuscript.pdf
->>>>>>> c0aace35c1dd556c532709e9a5db786579d99078
