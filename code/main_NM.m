@@ -79,3 +79,11 @@ y = H*x + w;
 figure
 plot(y)
 drawnow
+
+
+%%
+
+% initalise state estimate
+x_hat = size(x);
+x_hat(:,1) = mean(x,2);
+
