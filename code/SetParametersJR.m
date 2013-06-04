@@ -21,8 +21,8 @@ switch mode
         params.v_0 = 6;        % firing threshold
         params.r = 0.56;              % sigmoid slope
         
-%         params.A = 3.25;          % excitatory gain
-        params.A = 5;          % excitatory gain
+        params.A = 3.25;          % excitatory gain
+%         params.A = 5;          % excitatory gain
         params.a = 100;          % excitatory time constant
         params.B = 22;         % inhibitory gain
         params.b = 50;         % inhibitory time constant
@@ -47,8 +47,8 @@ switch mode
         params.v_0 = 6;        % firing threshold
         params.r = 0.56;              % sigmoid slope
         
-%         params.A = 8.25;          % excitatory gain
-        params.A = 5;          % excitatory gain
+        params.A = 8.25;          % excitatory gain
+%         params.A = 5;          % excitatory gain
         params.a = 100;          % excitatory time constant
         params.B = 22;         % inhibitory gain
         params.b = 50;         % inhibitory time constant

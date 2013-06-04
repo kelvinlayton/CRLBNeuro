@@ -6,16 +6,16 @@
 %
 
 dt = 0.001; 
-params = SetParametersWendling('alpha');
+params = SetParametersNM('alpha');
 params.dt = dt;
 
-NStates = 10;                           
-f = @(x)model_Wendling(x,'transition',params);
-F = @(x)model_Wendling(x,'jacobian',params);
+NStates = 4;                           
+f = @(x)model_NM(x,'transition',params);
+F = @(x)model_NM(x,'jacobian',params);
 
 rng(0);
 
-p=linspace(-1,1,1000);
+p=linspace(-10,10,1000);
 P=length(p);
 
 x=repmat(rand(NStates,1),1,P);
@@ -24,7 +24,7 @@ yhat=zeros(NStates,P);
 
 % Calculate the output vector as the parameter is varied
 %
-perturbIdx=1;
+perturbIdx=3;
 x(perturbIdx,:)=p;
 for i=1:P
     y(:,i)=f(x(:,i));
@@ -33,7 +33,7 @@ end
 % Calculate the linear approximation using the jacobian about the specified
 % fixed point
 %
-p0=0.25;
+p0=4;
 [~,idx] = min(abs(p-p0));
 p0=p(idx);
 x0=x(:,idx);
