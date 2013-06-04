@@ -6,19 +6,19 @@
 %
 
 dt = 0.001; 
-params = SetParametersJR('alpha');
+params = SetParametersWendling('alpha');
 params.dt = dt;
 
-NStates = 6;                           
-f = @(x)model_JR_erf(x,'transition',params);
-F = @(x)model_JR_erf(x,'jacobian',params);
+NStates = 10;                           
+f = @(x)model_Wendling(x,'transition',params);
+F = @(x)model_Wendling(x,'jacobian',params);
 
 rng(0);
 
 p=linspace(-1,1,1000);
 P=length(p);
 
-x=repmat(rand(6,1),1,P);
+x=repmat(rand(NStates,1),1,P);
 y=zeros(NStates,P);
 yhat=zeros(NStates,P);
 
@@ -33,7 +33,7 @@ end
 % Calculate the linear approximation using the jacobian about the specified
 % fixed point
 %
-p0=0.06;
+p0=0.25;
 [~,idx] = min(abs(p-p0));
 p0=p(idx);
 x0=x(:,idx);
@@ -47,4 +47,4 @@ plot(p,y);
 hold on;
 plot(p0,y(:,idx),'o')
 plot(p,yhat,'--')
-xlim(0.2*[-1 1]);
+% xlim(0.2*[-1 1]);

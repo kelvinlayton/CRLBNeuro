@@ -31,22 +31,72 @@ z_i = x(6);         % derivative of above
 
 v_e = v_e1 - v_e2;      % total membrane potential of excitatory population - just used in sigmoid
 
-f_v_i = 2*e_0 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
-f_v_e = 2*e_0 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population
+
+% Linear component of model
+%
+F = [1, dt, 0, 0, 0, 0; ...
+     -a^2*dt, 1-2*a*dt, 0, 0, 0, 0; ...
+     0, 0, 1, dt, 0, 0; ...
+     0, 0, -b^2*dt, 1-2*b*dt, 0, 0; ...
+     0, 0, 0, 0, 1, dt; ...
+     0, 0, 0, 0, -a^2*dt, 1-2*a*dt; ];
+
+% Sigmoid functions
+%
+f_v_i = 1 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
+f_v_e = 1 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population
+
 
 if mode(1)=='t';
+        
+    % Nonlinear component
+    %
+    gx = [0; ...
+          0; ...
+          0; ...
+          b*B*C2*dt*2*e_0*f_v_i; ...
+          0; ...
+          a*A*C1*dt*2*e_0*f_v_e];
+       
+    % Constant component
+    %   
+    c = [0; dt*a*A*mu; 0; 0; 0; 0];
+
+    % Nonlinear transition model
+    %
+    out = F*x + gx + c;
+
+%     v_e1_tplus1 = z_e1*dt + v_e1;
+%     z_e1_tplus1 = (-2*a*z_e1 - a^2*v_e1 + a*A*mu)*dt + z_e1;
+% 
+%     v_e2_tplus1 = z_e2*dt + v_e2;
+%     z_e2_tplus1 = (-2*b*z_e2 - b^2*v_e2 + b*B*C2*f_v_i)*dt + z_e2;
+% 
+%     v_i_tplus1 = z_i*dt + v_i;
+%     z_i_tplus1 = (-2*a*z_i - a^2*v_i + a*A*C1*f_v_e)*dt + z_i;
+% 
+%     out2 = [v_e1_tplus1 z_e1_tplus1 v_e2_tplus1 z_e2_tplus1 v_i_tplus1 z_i_tplus1]';
+%     assert(norm(out-out2)<1e-10)
+
+else
     
-    v_e1_tplus1 = z_e1*dt + v_e1;
-    z_e1_tplus1 = (-2*a*z_e1 - a^2*v_e1 + a*A*mu)*dt + z_e1;
-
-    v_e2_tplus1 = z_e2*dt + v_e2;
-    z_e2_tplus1 = (-2*b*z_e2 - b^2*v_e2 + b*B*C2*f_v_i)*dt + z_e2;
-
-    v_i_tplus1 = z_i*dt + v_i;
-    z_i_tplus1 = (-2*a*z_i - a^2*v_i + a*A*C1*f_v_e)*dt + z_i;
-
-    out = [v_e1_tplus1 z_e1_tplus1 v_e2_tplus1 z_e2_tplus1 v_i_tplus1 z_i_tplus1]';
+    % Linearise g()
+    %
+    f_v_i_derivative = 2*e_0*r*f_v_i*(1-f_v_i);
+    f_v_e_derivative = 2*e_0*r*f_v_e*(1-f_v_e);
     
+
+    G = [0, 0, 0, 0, 0, 0; ...
+         0, 0, 0, 0, 0, 0; ...
+         0, 0, 0, 0, 0, 0; ...
+         0, 0, 0, 0, b*B*C2*dt*f_v_i_derivative, 0; ...
+         0, 0, 0, 0, 0, 0; ...
+         a*A*C1*dt*f_v_e_derivative,0,-a*A*C1*dt*f_v_e_derivative, 0, 0, 0; ...
+        ];
+    
+    % Jacobian
+    %
+    out = F + G;
 end
 
 
