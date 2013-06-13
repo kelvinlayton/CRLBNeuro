@@ -5,11 +5,13 @@ clc
 clear
 
 FS = 8;             % fontsize - point
+FS_Panel_Label = 12;
+
 font = 'arial';
 fig_width = 17;  % cm
 fig_height = 5;  % cm
 
-LW = 1;         % linewidth
+LW = 0.5;         % linewidth
 
 min_y = -18;
 max_y = 27;
@@ -109,7 +111,7 @@ axis off
 set(gca,'fontsize',FS,'fontname',font)
 text_x = -0.25;
 text_y = max(y);
-text(text_x,text_y,'E','fontsize',FS,'fontname',font)
+text(text_x,text_y,'E','fontsize',FS_Panel_Label,'fontname',font)
 
 % this is the legenend for time and amplitude
 ax(6) = subplot(234);
