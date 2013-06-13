@@ -2,7 +2,7 @@
 % estimation
 
 
-N = 1000;             	% number of samples
+N = 2000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
 nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)
@@ -11,7 +11,7 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 mode='alpha';
-mode='seizure';
+% mode='seizure';
 parameters = SetParametersJR(mode);
 parameters.dt = dt;
 A=parameters.A;
@@ -37,7 +37,6 @@ x(:,1) = x0;
 
 Q = zeros(NStates);
 Q(4,4) = (sqrt(dt)*A*a*sigma)^2;
-
 R = 1^2*eye(1);
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +57,33 @@ H = [0 0 1 0 -1 0];           % observation function
 w = mvnrnd(zeros(size(H,1),1),R,N)';
 y = H*x + w;
 figure,plot(t,-H*x)
-% 
+
+
+% save(['JR_' mode '.mat'],'y','t') 
+
+
+%%
+% One column = 17.35 max
+% two column = 8.3 cm max
+FS = 8;             % fontsize - point
+font = 'arial';
+fig_width = 5.7;  % cm
+fig_height = 2;  % cm
+fig_filename = '/Users/dean/Projects/CRLBNeuro/manuscript/figures/pdf/JR_seizure.pdf';
+figure('units','centimeters','papersize',[fig_height fig_width],'filename',fig_filename,'position',[2 2 fig_width fig_height]);
+
+LW = 1;         % linewidth
+plot(t,-y,'k','linewidth',LW)
+axis tight
+axis off
+set(gca,'fontsize',FS,'fontname',font)
+text_x = -0.25;
+text_y = max(-y);
+text(text_x,text_y,'D','fontsize',FS,'fontname',font)
+% xlabel('Time (s)','fontsize',FS,'fontname',font)
+% ylabel('Amplitude','fontsize',FS,'fontname',font)
+
+%% 
 % % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % % Run EKF
 % % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

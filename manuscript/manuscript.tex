@@ -90,6 +90,15 @@ The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set
 	\caption{\emph{\textbf{Models of Cortical Columns.} Each model has a pyramidal neural population, with various forms of feedback and inputs (Cx. = Cortex, Th. = Thalamus). The EEG is taken as the mean membrane potential of the pyramidal population, $v_p(t)$, with additive measurement noise.  a) Minimal model of a column with inhibitory feedback \cite{Silva1974}. b) An extension with excitatory feedback and afferent input from thalamus \cite{Jansen1995,David2003}. c) Column with inhibition occurring across two times scales, enabling modelling of higher frequency activity observed in seizures~\cite{Wendling2002}.}}
 	\label{fig:NMMs}
 \end{figure}
+
+\begin{figure}[ht]
+	\centering
+		\includegraphics[scale=1]{./figures/pdf/Example_Data.pdf}
+		\caption{\textbf{Example data generated using the neural mass models.}}
+	\label{fig:NMMs}
+\end{figure}
+
+
 The parameters of the neural masses not only define the population type, but also the behaviour exhibited by the model. For example, certain parameter combinations result in a model of a cortical column that will generate alpha wave type activity (normal activity) and, for another set of parameters, we create a model that will exhibit epileptic behaviour \cite{Wendling2002}. Therefore, we consider a family of models, which we define generally as 
 \begin{align}\label{eq:NeuralMassModel}
     \dot{\mathbf{x}}(t) =& f_{\theta}\left(\mathbf{x}(t),\mathbf{u}(t)\right)\\

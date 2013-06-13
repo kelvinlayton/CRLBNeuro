@@ -4,7 +4,7 @@ clc
 close all
 clear
 
-N = 1000;             	% number of samples
+N = 2000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
 nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)
@@ -13,8 +13,8 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 % mode = 'background';
-% mode = 'alpha';       % this is more like alpha!!!
-mode = 'spikes';
+mode = 'alpha';       % this is more like alpha!!!
+% mode = 'spikes';
 parameters = SetParametersWendling(mode);
 parameters.dt = dt;
 A = parameters.A;
@@ -41,7 +41,7 @@ x(:,1) = x0;
 
 % Define input
 Q = zeros(NStates);
-Q(4,4) = (sqrt(dt)*A*a*sigma)^2;
+Q(4,4) = 0.4225*(sqrt(dt)*A*a*sigma)^2;         % note! the scaling makes the noise the same as the other models
 v = mvnrnd(zeros(NStates,1),Q,N)';
 
 % Euler-Maruyama integration
@@ -55,8 +55,9 @@ R = 1^2*eye(1);
 w = mvnrnd(zeros(size(H,1),1),R,N)';
 y = H*x + w;
 
-% figure
-% plot(t,-H*x)
+% save(['Wendling_' mode '.mat'],'y','t') 
+figure
+plot(t,-H*x)
 
 %% Run EKF for this model
 
