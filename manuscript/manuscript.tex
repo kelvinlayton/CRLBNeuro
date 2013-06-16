@@ -122,45 +122,31 @@ where $e_0$ is a parameter that scales the maximum firing rate, $A$ and $B$ are 
 
 \section{Theory}
 
-The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and also assess the performance of different estimation algorithms. 
-
-INCLUDE TIME DEPENDENCE STRAIGHT AWAY
-
-Central to the BCRB is the Bayes information matrix defined as
+The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and also assess the performance of different estimation algorithms. The bound was formulated in \cite{VanTrees1968} for the estimation of random parameters, making it well suited to the filtering problem described above, where the state is considered a random variable. The BCRB is a lower bound on the mean squared error of an estimator $\hat{\vec x}(\vec y)$ given by
 \begin{align}
-	\mat J_k &= \mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right] 
+	\mathsf{MSE} = \mathbb E_{\vec x,\vec y} [(\hat{\vec x}(\vec y) - \vec x)(\hat{\vec x}(\vec y) - \vec x)^T] \ge \mat J^{-1}
+	\label{eqn:mse_bound}
 \end{align}
-The expectation is over the state, $\vec x$ and the measurements, $\vec y$ with respect to the joint distribution $p(\vec y,\vec x)$.
+where $\mat J$ is the Bayes information matrix defined as
+\begin{align}
+	\mat J &= -\mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right] 
+	\label{eqn:bayes_matrix}
+\end{align}
+where $\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$ and the expectation is taken over the state $\vec x$ and the measurements $\vec y$. 
 
-The BCRB is based on the Bayes information matrix, $J_{\rm B}$, which contains a data term and a prior term \cite{sdf},
-\begin{align}
-	J_{\rm B} = J_{\rm D} + J_{\rm P}
-\end{align}
-where 
-\begin{align}
-	J_{\rm D} &= \mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log \ell(\vec y|\vec x) \right] \\
-	J_{\rm P} &= \mathbb E_{\vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec x) \right]
-\end{align}
-The data term, $J_{\rm D}$, depends on the likelihood, $\ell$, and the prior term, $J_{\rm P}$, depends on the prior distribution, $p$. The BCRB is ideally suited to filtering applications since the prior distribution captures the information up to the current time.
-
-The BCRB gives a lower bound on the mean squared error
-\begin{align}
-	\mathsf{MSE}_k = \mathbb E_{\vec x_k,\vec y} [(\hat{\vec x}_k(\vec y) - \vec x_k)(\hat{\vec x}_k(\vec y) - \vec x_k)^T] \ge \mat J_{k}^{-1}
-\end{align}
-where $\hat{\vec x}_k$ is the estimated state at time $k$ given the measurements from time $1,\ldots,k$.
 
 \subsection{Recursive Bayesian CRB}
 
-It is necessary to develop a recursive formula for $\mat J_k$ for filtering applications to prevent the above computations becoming unwieldy. The popular recursion in \cite{Tichavsky1998} is not applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. The recursion in \cite{Bergman2001} is applicable to this class of models and can be summarised as 
+To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$ as demonstrated in \cite{Tichavsky1998}. However, this recursion is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to this class of models and can be summarised as 
 \begin{align}
-	\mat J_k = \left( \mat Q + \bar{\mat F}_{k-1} \mat J_{k-1}^{-1} \bar{\mat F}_{k-1}^T\right)^{-1} + \mat C^T \mat R^{-1} \mat C
+	\mat J_k = \left( \mat Q + {\mat F}_{k-1} \mat J_{k-1}^{-1} {\mat F}_{k-1}^T\right)^{-1} + \mat C^T \mat R^{-1} \mat C
 \end{align}
 where
 \begin{align}
-		\bar{\mat F}_k &= \mathbb E_{\vec x_k} \left[ \nabla_{\vec x_k}^T \vec f(\vec x_k)\right] 
+		{\mat F}_k &= \mathbb E_{\vec x_k} \left[ \nabla_{\vec x_k}^T \vec f(\vec x_k)\right] 
 		\label{eqn:F_matrix_expectation}
 \end{align}
-See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form so Monte Carlo techniques are employed. A large number of state realisations are generated at each time point and the expectation is approximated by an average over the realisations.
+See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realisations are generated at each time point and the expectation is approximated by an average over the realisations.
 
 
 \section{Simulations}
@@ -188,8 +174,7 @@ contextualize work w.r.t. existing literature?
 \section{Conclusion}
 
 \appendix
-\section{Derivation of Recursive Bayesian CRB}
-\label{sec:derivation_recursion}
+\section{Derivation of Recursive Bayesian CRB}\label{sec:derivation_recursion}
 
 The recursion in \cite{Bergman2001} is
 \begin{subequations}
