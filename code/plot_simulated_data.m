@@ -37,7 +37,7 @@ axis off
 set(gca,'fontsize',FS,'fontname',font)
 text_x = -0.25;
 text_y = max(y(3001:end));
-text(text_x,text_y,'A','fontsize',FS,'fontname',font)
+text(text_x,text_y,'A','fontsize',FS_Panel_Label,'fontname',font)
 
 %
 load JR_alpha.mat
@@ -56,7 +56,7 @@ axis off
 set(gca,'fontsize',FS,'fontname',font)
 text_x = -0.25;
 text_y = max(y);
-text(text_x,text_y,'B','fontsize',FS,'fontname',font)
+text(text_x,text_y,'B','fontsize',FS_Panel_Label,'fontname',font)
 
 load JR_seizure.mat
 y = detrend(y);
@@ -74,7 +74,7 @@ axis off
 set(gca,'fontsize',FS,'fontname',font)
 text_x = -0.25;
 text_y = max(-y);
-text(text_x,text_y,'D','fontsize',FS,'fontname',font)
+text(text_x,text_y,'D','fontsize',FS_Panel_Label,'fontname',font)
 
 %
 load Wendling_alpha.mat
@@ -93,7 +93,7 @@ axis off
 set(gca,'fontsize',FS,'fontname',font)
 text_x = -0.25;
 text_y = max(y);
-text(text_x,text_y,'C','fontsize',FS,'fontname',font)
+text(text_x,text_y,'C','fontsize',FS_Panel_Label,'fontname',font)
 
 load Wendling_spikes.mat
 y = detrend(y);
