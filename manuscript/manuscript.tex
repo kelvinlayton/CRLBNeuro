@@ -137,7 +137,7 @@ where $\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$
 
 \subsection{Recursive Bayesian CRB}
 
-To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$ as demonstrated in \cite{Tichavsky1998}. However, this recursion is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to this class of models and can be summarised as 
+To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$ as demonstrated in \cite{Tichavsky1998}. However, this recursion is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to the models considered here and can be summarised as 
 \begin{align}
 	\mat J_k = \left( \mat Q + {\mat F}_{k-1} \mat J_{k-1}^{-1} {\mat F}_{k-1}^T\right)^{-1} + \mat C^T \mat R^{-1} \mat C
 \end{align}
@@ -148,26 +148,39 @@ where
 \end{align}
 See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realisations are generated at each time point and the expectation is approximated by an average over the realisations.
 
+The bound defined above can be used in several ways. Firstly, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Finally, the efficiency of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. This indicated whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
+
+This paper assumes the parameters of a given model are constant and known. However, it is important to note that the results and conclusions presented in this paper are directly applicable to the case of slowly varying unknown parameters. This statement can be quantified by first considering a state vector that is augmented with constant unknown parameters \cite{sdf}. In this case, the information about the parameters accumulates each time step and the performance bound asymptotically approaches the case for constant known parameters. As an extension, if the parameters are varying slowly with respect to the sampling rate the bound will remain sufficiently close to the case of known parameters.
 
 \section{Simulations}
 
-\subsection{Effect of increasing model complexity -- bound should increase}
+\subsection{Across models - model feasibility}
 
-e.g. Bound for model A > model B > model C
+We consider the feasibility of the three models described in Section~\ref{sec:background}. Models A and B contain 6 unknown states and model C has 10 unknown states. An important question to ask as the models become increasingly complex is: how well can we estimate the states from the available measurements? To investigate this, we compute the BCRB for each model in an operating mode analogous to alpha rhythms. The specific parameters are listed in Appendix~\ref{sec:parameter_table}.
 
-\subsection{Effect of parameters changing -- bound should change}
 
-e.g. seizure easier to estimate than alpha rhythms
+\subsection{Within model - seizure, alpha}
+
+It has been well demonstrated that models of type B and C can generate vastly different oscillations for different parameters \cite{sdf}. Bifurcation theory provides a theoretical tool to analyse this feature and has been reported in several places \cite{sdf}. Good qualitative agreement between EEG data and the models has been observed and consequently different parameters sets have been assigned to different types of brain activity such as alpha rhythms or epileptic seizures \cite{sfd}.
+
+Here, we investigate ones ability to estimate the states of a model for different types of activity. We calculate the BCRB for model B for two parameter sets representing alpha rhythms and epileptic seizures.
+
+Fig.~\ref{sdf} illustrates that the seizure type behaviour is easier to estimate than background alpha rhythms...<text here>. This is perhaps not surprising since, intuitively, seizure oscillations appear more structured and have larger amplitudes as illustrated in Fig.~\ref{fig:NMMs}.
+
+\subsection{Benchmark algorithms}
+
+e.g. EKF doesn't reach bound for model X, thus better algorithms are required.
+
 
 \subsection{Effect of measurement noise? -- pretty boring}
 
 e.g. scalp EEG vs iEEG?
 
-\subsection{Augmented models (joint estimation of parameters and states)?}
-
 \section{Discussion}
 
 extensions to other applications e.g. experimental design
+
+algorithm performance
 
 contextualize work w.r.t. existing literature?
 
@@ -206,6 +219,11 @@ Therefore the final recursion is
 \begin{align}
 	\mat J_{k|k} = \left( \mat Q + \bar{\mat F}_{k-1} \mat J_{k-1}^{-1} \bar{\mat F}_{k-1}^T\right)^{-1} + \mat H_k^T \mat R^{-1} \mat H_k
 \end{align}
+
+\section{List of notation and parameters}
+\label{sec:parameter_table}
+
+Table here
 
 
 \small
