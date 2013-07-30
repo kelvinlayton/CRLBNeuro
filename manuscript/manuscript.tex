@@ -38,7 +38,7 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Forward models have led to theory on the emergence of the brains rhythms, the mechanisms of anesthetic agents, the brains response to sensory stimuli, short-term memory formation, visual hallucinations and epileptic seizures. Most recently, advances engineering methods and computing resources have expanded the utility of these models as integral elements of frameworks to estimate of system and parametric states that can not be directed measured using electrophysiology. An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionise how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown. Thus the ability to estimate these quantities using the framework will enable a greater understanding of individuals’ pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems.
+Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Forward models have led to theory on the emergence of the brains rhythms, the mechanisms of anesthetic agents, the brains response to sensory stimuli, short-term memory formation, visual hallucinations and epileptic seizures. Most recently, advances engineering methods and computing resources have expanded the utility of these models as integral elements of frameworks to estimate of system and parametric states that can not be directly measured using electrophysiology. An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionise how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown. Thus the ability to estimate these quantities using the framework will enable a greater understanding of individuals’ pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems.
 
 To date a large body of work has demonstrated validity of these models in-principal, through the ability to reproduce experimental data. The next stage is understanding the performance of estimation algorithms. Once models have been fit to subjects a final step in assessing validity will be to examine the within subject predictive power.In order for such a framework to be established as a clinical platform further work is required for establishing validity and feasibility for the mesoscopic models. This paper introduces engineering tools to neuroscience community for formally accessing feasibility. We also postulate how these tools can be used to increase performance of estimation methods. 
 
@@ -134,7 +134,7 @@ where $e_0$ is a parameter that scales the maximum firing rate, $A$ and $B$ are 
 
 \section{Theory}
 
-The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and also assess the performance of different estimation algorithms. The bound was formulated in \cite{VanTrees1968} for the estimation of random parameters, making it well suited to the filtering problem described above, where the state is considered a random variable. The BCRB is a lower bound on the mean squared error of an estimator $\hat{\vec x}(\vec y)$ given by
+The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected performance of different estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are considered uncertain or random variable. The BCRB is a lower bound on the mean squared error of an estimator, $\hat{\vec x}(\vec y)$, given by
 \begin{align}
 	\mathsf{MSE} = \mathbb E_{\vec x,\vec y} [(\hat{\vec x}(\vec y) - \vec x)(\hat{\vec x}(\vec y) - \vec x)^T] \ge \mat J^{-1}
 	\label{eqn:mse_bound}
@@ -144,7 +144,12 @@ where $\mat J$ is the Bayes information matrix defined as
 	\mat J &= -\mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right] 
 	\label{eqn:bayes_matrix}
 \end{align}
-where $\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$ and the expectation is taken over the state $\vec x$ and the measurements $\vec y$. 
+where $\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$ and the expectation is taken over the state $\vec x$ and the measurements $\vec y$. In Bayesian estimation schemes (including Kalman filtering) $\hat{\vec x}(\vec y) = \mathbb{E}_{\vec x}\left[p\left(x|y\right)\right]$. 
+
+The provide some intuition into this Matrix, we can write $p(\vec y,\vec x)$ as the product of the likelihood of the states given the observations and the prior information of the states
+\begin{equation}
+	\log(p(\vec y,\vec x)) = \log\left(\mathcal{L}(\vec x|\vec y)\right) + \log\left(p(\vec x)\right)
+\end{equation}
 
 
 \subsection{Recursive Bayesian CRB}
