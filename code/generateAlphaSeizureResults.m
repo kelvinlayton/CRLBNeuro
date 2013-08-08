@@ -17,37 +17,35 @@ rng(0);
 
 M = 100;    % Mumber of Monte Carlo trials for MSE calculation
 
-% Intial true parameter values
-% mode = 'background';
-mode = 'alpha';       
 
-NStatesModels = [6 6 10 3];  
+NStatesModels = [6 10 6 10];  
 
 % Model parameters
-params{1} = SetParametersLopes(mode);
-params{2} = SetParametersJR(mode);
-params{3} = SetParametersWendling(mode);
-params{4} = params{1}; % Only need dt
+params{1} = SetParametersJR('alpha');
+params{2} = SetParametersWendling('alpha');
+params{3} = SetParametersJR('seizure');
+params{4} = SetParametersWendling('spikes');
 
 % Transition functions
-models{1} = @model_Lopes;
-models{2} = @model_JR;
-models{3} = @model_Wendling;
-models{4} = @model_Linear;
+models{1} = @model_JR;
+models{2} = @model_Wendling;
+models{3} = @model_JR;
+models{4} = @model_Wendling;
 
 % Measurement fnctions
-Hmodels{1} = [1 0 -1 0 0 0];           % Lopes
-Hmodels{2} = [0 0 1 0 -1 0];           % JR
-Hmodels{3} = [0 0 1 0 -1 0 -1 0 0 0];  % Wendling
-Hmodels{4} = [1 1 1];
+Hmodels{1} = [0 0 1 0 -1 0];           % JR
+Hmodels{2} = [0 0 1 0 -1 0 -1 0 0 0];  % Wendling
+Hmodels{3} = [0 0 1 0 -1 0];           % JR
+Hmodels{4} = [0 0 1 0 -1 0 -1 0 0 0];  % Wendling
 
 % Indices to plot (only potentials, not derivatives)
 displayStates{1} = [1 3 5];
-displayStates{2} = [1 3 5];
-displayStates{3} = [1 3 5 7 9];
-displayStates{4} = [1 2 3];
-noiseInd = [2 4 4 2];     % NEED TO CHECK THESE! (and adjust Wendling noise)
-noiseScale = [1 1 0.4225 1];
+displayStates{2} = [1 3 5 7 9];
+displayStates{3} = [1 3 5];
+displayStates{4} = [1 3 5 7 9];
+
+noiseInd = [4 4 4 4 ];     % NEED TO CHECK THESE! (and adjust Wendling noise)
+noiseScale = [1 0.4225 1 0.4225];
 
 mseModels = cell(length(models),1);
 crbModels = cell(length(models),1);
@@ -88,51 +86,17 @@ R = 10^2*eye(1);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute CRLB
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,100);
+crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,500);
 
 crb = crbAll(:,end);
 
 
 semilogy(t,crbAll(displayInd,:))
 
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-% Compute empirical MSE
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-mse = zeros(NStates,1);
-parfor i=1:M
-    
-    % Generate trajectory realisation
-    %
-    v = mvnrnd(zeros(NStates,1),Q,N)';
-
-    x = zeros(NStates,N); 
-    x(:,1) = mvnrnd(x0,P0)';
-
-    % Euler-Maruyama integration
-    %
-    for n=1:N-1
-        x(:,n+1) = f(x(:,n))  + v(:,n);
-    end
-
-    w = mvnrnd(zeros(size(H,1),1),R,N)';
-    y = H*x + w;
-
-    % Apply EKF filter
-    %
-    m = extended_kalman_filter(y,f,F,H,Q,R,m0,P0);
-
-    mse = mse + (m(:,end) - x(:,end)).^2;
-
-end
-
-mse = mse ./ M;
-
-mseModels{iModel} = mse(displayInd);
 crbModels{iModel} = crb(displayInd);
 
 end
 
-save crb_ekf_results.mat mseModels crbModels
+save crb_seizure_results.mat crbModels
 
-plotEKFresults
+plotAlphaSeizureResults
