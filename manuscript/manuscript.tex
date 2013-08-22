@@ -175,7 +175,7 @@ We consider the feasibility of the three models described in Section~\ref{sec:ba
     \includegraphics{./figures/pdf/AlphaSeizureBar}
   \end{center}
   \caption{The BCRB for two models in alpha and seizure states}
-  \label{fig:CrbBar}
+  \label{fig:AlphaSeizure}
 \end{figure}
 
 
@@ -186,7 +186,7 @@ It has been well demonstrated that models of type B and C can generate vastly di
 
 Here, we investigate ones ability to estimate the states of a model for different types of activity. We calculate the BCRB for model B for two parameter sets representing alpha rhythms and epileptic seizures.
 
-Fig.~\ref{sdf} illustrates that the seizure type behaviour is easier to estimate than background alpha rhythms...<text here>. This is perhaps not surprising since, intuitively, seizure oscillations appear more structured and have larger amplitudes as illustrated in Fig.~\ref{fig:NMMs}.
+Fig.~\ref{fig:AlphaSeizure} illustrates that the states underlying seizure type behaviour is more difficult to estimate than background alpha rhythms. This is expected since the input noise driving the system is amplified by a larger synaptic gain parameter, $A$, for the seizure state, as listed in Table~\ref{tbl:Parameters}. This increases the overall uncertainty in the model, reduces the information obtained by the measurements and thus increases the bound.
 
 \subsection{Benchmark algorithms}
 
@@ -251,7 +251,10 @@ Therefore the final recursion is
 \label{sec:parameter_table}
 
 Table here
-
+\begin{table}
+	
+	\caption{\label{tbl:Parameters}Parameters used to generate different states}
+\end{table}
 
 \small
 \bibliographystyle{ieeetr}
