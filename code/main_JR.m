@@ -11,7 +11,7 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 mode='alpha';
-% mode='seizure';
+mode='seizure';
 parameters = SetParametersJR(mode);
 parameters.dt = dt;
 A=parameters.A;
