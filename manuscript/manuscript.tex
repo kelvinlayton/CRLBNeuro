@@ -128,7 +128,7 @@ where $e_0$ is a parameter that scales the maximum firing rate, $A$ and $B$ are 
 
 
 \section{Theory}
-The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected performance of different estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are considered uncertain or random variable. The BCRB is a lower bound on the mean squared error (MSE) of an estimator, $\hat{\vec x}(\vec y)$, given by
+The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected performance of different estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are modelled as random variables. The BCRB is a lower bound on the mean squared error (MSE) of an estimator, $\hat{\vec x}(\vec y)$, given by
 \begin{align}
 	\mathsf{MSE} = \mathbb E_{\vec x,\vec y} [(\hat{\vec x}(\vec y) - \vec x)(\hat{\vec x}(\vec y) - \vec x)^T] \ge \mat J^{-1},
 	\label{eqn:mse_bound}
@@ -138,18 +138,26 @@ where $\mat J$ is the Bayes information matrix defined as
 	\mat J &= -\mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right],
 	\label{eqn:bayes_matrix}
 \end{align}
-$\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$, the expectation is taken over the state vector $\vec x$, and the measurements $\vec y$. In Bayesian estimation schemes (including Kalman filtering) $\hat{\vec x}(\vec y) = \mathbb{E}_{\vec x}\left[p\left(x|y\right)\right]$. 
+$\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$, and the expectation is taken over both the state vector $\vec x$ and the measurements $\vec y$. In many Bayesian estimation schemes (including Kalman filtering) the estimator is the mean of the posterior distribution, $\hat{\vec x}(\vec y) = \mathbb{E}_{\vec x}\left[ p (\vec x|\vec y)\right]$. 
 
-To provide some intuition into the Bayes information matrix, we can write $p(\vec y,\vec x)$ as the product of the likelihood of the states given the observations and the prior information of the states
+To provide some intuition into the Bayes information matrix, we can write the joint distribution $p(\vec y,\vec x)$ as the product of the likelihood function and the prior distribution. Taking the logarithm gives
 \begin{align}
-	p(\vec y,\vec x) =& \mathcal{L}(\vec x|\vec y) p(\vec x) \\
-	\log(p(\vec y,\vec x)) =& \underbrace{\log\left(\mathcal{L}(\vec x|\vec y)\right)}_{\mathrm{Fisher Information}} + \log\left(p(\vec x)\right) \\
-	-\mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right] =& 
+	\log p(\vec y,\vec x) =& \log\mathcal{L}(\vec x|\vec y) + \log p(\vec x).
 \end{align}
-
+Using this relation, the Bayes information matrix in \eqref{eqn:bayes_matrix} can be decomposed into a data component, $\mat J_D$, and a prior component, $\mat J_P$, such that $\mat J = \mat J_D + \mat J_P$.
+The two components are defined as
+\begin{align}
+	\mat J_D &= \mathbb E_{\vec x}\left[ \mat J_F(\vec x) \right]  \\
+	\mat J_P &= -\mathbb E_{\vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec x) \right]
+\end{align}
+where $\mat J_F$ is the classical Fisher information matrix for deterministic states,
+\begin{align}
+	\mat J_F(\vec x) &= -\mathbb E_{\vec y| \vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) \right].
+\end{align}
+Some important insights can be gained from this decomposition. First, the contribution of the data to the Bayes information matrix is the expectation of the classical Fisher information matrix taken over all possible states. Secondly, the contribution from the prior distribution directly adds to the Bayes information matrix, capturing our prior knowledge about of the states.
 
 \subsection{Recursive Bayesian CRB}
-To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$ as demonstrated in \cite{Tichavsky1998}. However, this recursion is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to the models considered here and can be summarised as 
+To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$, first demonstrated in \cite{Tichavsky1998}. The recursion presented in that work is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to the models considered here and can be summarised as 
 \begin{align}
 	\mat J_k = \left( \mat Q + {\mat F}_{k-1} \mat J_{k-1}^{-1} {\mat F}_{k-1}^T\right)^{-1} + \mat C^T \mat R^{-1} \mat C
 \end{align}
@@ -160,7 +168,7 @@ where
 \end{align}
 See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realisations are generated at each time point and the expectation is approximated by an average over the realisations.
 
-The bound defined above can be used in several ways. Firstly, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Finally, the efficiency of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. This indicated whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
+The bound defined in \eqref{eqn:mse_bound} can be used in several ways. First, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Thirdly, the efficiency of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. This indicated whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
 
 This paper assumes the parameters of a given model are constant and known. However, it is important to note that the results and conclusions presented in this paper are directly applicable to the case of slowly varying unknown parameters. This statement can be quantified by first considering a state vector that is augmented with constant unknown parameters \cite{sdf}. In this case, the information about the parameters accumulates each time step and the performance bound asymptotically approaches the case for constant known parameters. As an extension, if the parameters are varying slowly with respect to the sampling rate the bound will remain sufficiently close to the case of known parameters.
 

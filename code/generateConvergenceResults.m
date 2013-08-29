@@ -85,7 +85,7 @@ R = 10^2*eye(1);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute CRLB
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,2000);
+crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,200);
 
 crb = crbAll(:,end);
 
