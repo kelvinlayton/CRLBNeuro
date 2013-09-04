@@ -211,13 +211,15 @@ EKF doesn't reach bound for any nonlinear model, thus better algorithms are requ
 
 \section{Discussion}
 \brian{Brief Summary of Paper}
-This paper has introduced a method for evaluating Bayesian estimation algorithms for fitting neural mass models to electrophysiological data. The results demonstrate that it is feasible to recover three neural mass models from data, assuming the model is accurate. 
+This paper has introduced a method for evaluating Bayesian estimation algorithms for fitting neural mass models to electrophysiological data. By providing bounds on the estimation accuracy, the results demonstrate that it is feasible to recover three neural mass models of varying complexity from data. Under the assumption that these models capture the essential dynamics of the phenomena observed in intracranial electroencephalography, the results imply that is possible to tailor computational models to an individual's brain dynamics. 
 
 \brian{Feasibility of Models}
-We have demonstrated how the method can be used to test the feasibility of recovering the states of models from data. In other words, the method can be used to see if a model is too complex to be recovered data regardless of the estimation method. If the measurement has no /or little information about the states then the bound will be infinitely high.
+We have demonstrated how the methods described in this paper can be used to test the feasibility of recovering the states of computational models from data. In other words, the method can be used to test if a model is too complex to be recovered data, regardless of the estimation method. The Bayesian Cramer-Rao lower bound (BCRLB) essentially measures the amount of information regarding the states that is present in the measurement. If the measurement has no information regarding the states of the model, then the bound will be infinitely high. 
+
+Neural mass models have evolved from a description of interaction of two very general populations, excitatory and inhibitory neurons, to interactions of specific populations that describe various networks. Cortical neural populations include pyramidal, spiny stellate, fast and slow inhibitory interneurons (ref). Deep brain populations include globus paladius, substansia niagara, sub-thalamic nuclei and more (ref). As models become more biologically realistic the BCRLB will be come more important for subject-specific modelling. Given that these models are all approximations then disturbances and modelling errors need to be accounted for. This naturally leads to Bayesian inference methods for subject-specific modelling to account for uncertainty. 
 
 \brian{Is there a better observation to improve estimation? / experimental design}
-The BCRLB can improve experimental design, where the bound can be used to select what is important to measure. For example, 
+In addition to evaluating estimation feasability and performance, the BCRLB can improve experimental design. For example, the bound can be used to select the nodes in a network that are important to measure in order to g. For example, 
 sampling rate affects the CRLB, extensions to other applications e.g. experimental design
 adaptive sensing
 

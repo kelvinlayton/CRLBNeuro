@@ -14,7 +14,7 @@ t = 0:dt:(N-1)*dt;
 % Intial true parameter values
 % mode = 'background';
 mode = 'alpha';       % this is more like alpha!!!
-% mode = 'spikes';
+mode = 'spikes';
 parameters = SetParametersWendling(mode);
 parameters.dt = dt;
 A = parameters.A;

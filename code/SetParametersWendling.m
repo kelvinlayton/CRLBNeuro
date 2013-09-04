@@ -1,4 +1,4 @@
-% Set parameters for the 6th order JR model
+% Set parameters for the Wendling
 %
 function params = SetParametersWendling(mode)
 
