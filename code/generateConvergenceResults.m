@@ -4,7 +4,7 @@ clc
 close all
 clear
 
-N = 500;             	% number of samples
+N = 100;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
 nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)
@@ -18,30 +18,38 @@ rng(0);
 M = 100;    % Mumber of Monte Carlo trials for MSE calculation
 
 
-NStatesModels = [6 6];  
+NStatesModels = [6 6 6];  
 
 % Model parameters
 params{1} = SetParametersLopes('alpha');
 params{2} = SetParametersLopes('alpha');
+params{3} = SetParametersLopes('alpha');
 
 
 % Transition functions
 models{1} = @model_Lopes;
 models{2} = @model_Lopes;
+models{3} = @model_Lopes;
 
 % Measurement fnctions
 Hmodels{1} = [1 0 -1 0 0 0];           % Lopes
 Hmodels{2} = [1 0 -1 0 0 0];           % Lopes
+Hmodels{3} = [1 0 -1 0 0 0];           % Lopes
 
 % Indices to plot (only potentials, not derivatives)
-displayStates{1} = [1 3 5];
-displayStates{2} = [1 3 5];
+displayStates{1} = [1 ];
+displayStates{2} = [1 ];
+displayStates{3} = [1 ];
 
-noiseInd = [2 2 ];     % NEED TO CHECK THESE! (and adjust Wendling noise)
-noiseScale = [1 1 ];
+noiseInd = [2 2 2];     % NEED TO CHECK THESE! (and adjust Wendling noise)
+noiseScale = [1 1 1];
 
-mseModels = cell(length(models),1);
-crbModels = cell(length(models),1);
+crbModels = zeros(6,N,length(models));
+
+priorSigma = [10 100 100];
+measureSigma = [10 10 100];
+
+plotStyles={'-','--',':'};
 
 for iModel = 1:length(models)
     
@@ -70,36 +78,28 @@ Q(noiseInd(iModel),noiseInd(iModel)) = noiseScale(iModel)*(sqrt(dt)*A*a*sigma)^2
 % Prior distribution (defined by m0 & P0)
 %
 m0 = x0;
-if iModel==1
-%     P0 = 100.^2*eye(NStates);
-    P0 = 50.^2*diag([1 0 1 0 1 0]) + 50^2*diag([0 1 0 1 0 1]);
-else
-%     P0 = 200.^2*eye(NStates);
-    P0 = 5000.^2*diag([1 0 1 0 1 0]) + 5000^2*diag([0 1 0 1 0 1]);
-end
-
+P0 = priorSigma(iModel).^2*eye(NStates);
 
 Hfun = @(x)H;
-R = 10^2*eye(1);
+R = measureSigma(iModel)^2*eye(1);
     
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute CRLB
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,200);
-
-crb = crbAll(:,end);
+crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,100);
 
 
-semilogy(t,crbAll(displayInd,:))
+crbModels(:,:,iModel) = crbAll;
+
+semilogy(t,sqrt(crbAll(displayInd,:)),plotStyles{iModel})
 iModel
 hold on;
 
-crbModels{iModel} = crb(displayInd);
 
 end
 
 return;
-
-save crb_convergence_results.mat crbModels
+%%
+save crb_convergence_results.mat crbModels t priorSigma priorSigma
 
 plotConvergenceResults
