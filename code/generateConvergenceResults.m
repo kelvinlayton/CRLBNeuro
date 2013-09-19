@@ -4,7 +4,7 @@ clc
 close all
 clear
 
-N = 100;             	% number of samples
+N = 110;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
 nn = fix(dT/dt);      	% (used in for loop for forward modelling) the integration time step can be small that the sampling (fix round towards zero)
@@ -46,7 +46,7 @@ noiseScale = [1 1 1];
 
 crbModels = zeros(6,N,length(models));
 
-priorSigma = [10 100 100];
+priorSigma = [10 20 20];
 measureSigma = [10 10 100];
 
 plotStyles={'-','--',':'};
@@ -86,7 +86,7 @@ R = measureSigma(iModel)^2*eye(1);
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Compute CRLB
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,100);
+crbAll = compute_pcrb_P(t,f,F,Hfun,Q,R,m0,P0,1000);
 
 
 crbModels(:,:,iModel) = crbAll;

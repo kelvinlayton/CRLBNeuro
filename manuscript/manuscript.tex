@@ -175,6 +175,19 @@ This paper assumes the parameters of a given model are constant and known. Howev
 
 \section{Simulations}
 
+\subsection{Time}
+
+Fig.~\ref{fig:DynamicCRB} displays the evolution of the Bayesian CRB for the first state of the model in \cite{Silva1974}. The solid line is for a relatively small prior covariance and low measurement noise; the dashed line is for a larger prior covariance and the dashed dotted line is for a large prior covariance and high measurement noise.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics{./figures/pdf/DynamicCRB}
+  \end{center}
+  \caption{The evolution of the BCRB for of the first state of model A. The ... }
+  \label{fig:DynamicCRB}
+\end{figure}
+
+
 \subsection{Across models - model feasibility}
 
 We consider the feasibility of the three models described in Section~\ref{sec:background}. Models A and B contain 6 unknown states and model C has 10 unknown states. An important question to ask as the models become increasingly complex is: how well can we estimate the states from the available measurements? To investigate this, we compute the BCRB for each model in an operating mode analogous to alpha rhythms. The specific parameters are listed in Appendix~\ref{sec:parameter_table}.
