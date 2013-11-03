@@ -1,7 +1,6 @@
 % This code repricates the structure of the Voss / Schiff FN simulation /
 % estimation
 
-
 N = 2000;             	% number of samples
 dT = 0.001;          	% sampling time step (global)
 dt = 1*dT;            	% integration time step
@@ -11,7 +10,7 @@ t = 0:dt:(N-1)*dt;
 
 % Intial true parameter values
 mode='alpha';
-mode='seizure';
+% mode='seizure';
 parameters = SetParametersJR(mode);
 parameters.dt = dt;
 A=parameters.A;
