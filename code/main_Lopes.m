@@ -21,8 +21,8 @@ sigma = parameters.sigma;
 
 % Initialise random number generator for repeatability
 %
-rng(0);
-
+% rng(0);
+rand('state',0)
 % Transition model
 %
 NStates = 6;                           
@@ -37,7 +37,7 @@ x(:,1) = x0;
 
 
 Q = zeros(NStates);
-Q(2,2) = (sqrt(dt)*A*a*sigma)^2;
+Q(2,2) = 0;%(sqrt(dt)*A*a*sigma)^2;
 
 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
