@@ -29,7 +29,7 @@
 \newcommand{\unit}[1]{\textcolor{green}{#1}}
 \newcommand{\brian}[1]{\textcolor{blue}{#1}}
 
-\title{Statistical performance analysis of data-driven neural mass models}
+\title{Statistical performance analysis of data-driven mesoscopic models}
 \date{\today}
 
 \begin{document}
@@ -38,11 +38,22 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Forward models have led to theory on the emergence of the brains rhythms, the mechanisms of anesthetic agents, the brains response to sensory stimuli, short-term memory formation, visual hallucinations and epileptic seizures. Most recently, advances engineering and statistical inference methods and computing resources have expanded the utility of these models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology. An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown. Thus the ability to estimate these quantities using the framework will enable a greater understanding of individuals pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems.
+\brian{What the paper is about / contribution}
+This paper introduces an existing engineering method to the neuroscience community for evaluating the feasibility of constructing subject-specific stochastic  computational models from measured data. Although the methods and models discussed in this paper are can be found in the engineering and computational neuroscience literature, it is important to link the fields together in order to advance our knowledge in systems neuroscience. 
 
-To date a large body of work has attempted to demonstrate the validity of these models in-principal, through the ability to qualitatively reproduce experimental data. Since the parameters of the models are expected to vary across individuals and across disease states, the models must be tuned to individuals to establish clinical utility. A critical steps in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to neuroscience community for formally accessing feasibility. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. Once models have been fit to subjects, a final step in assessing validity will be to examine the within subject predictive power. In order for such a framework to be established as a clinical platform further work is required for establishing validity and feasibility for the mesoscopic models.  
+\brian{Introduce the importance of the models, forward}
+Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Mesoscopic models describe the pooled dynamics of neural populations, analogous to signals recorded from a local field potential. Typically the state variables of models at this scale are the average membrane potential or the average firing rates of the neurons across the population. Forward models of this kind have led to theory on the emergence of the brains rhythms, the mechanisms of anesthetic agents, the brains response to sensory stimuli, short-term memory formation, visual hallucinations and epileptic seizures. 
 
-The literature describing mesoscopic neural models is dominated by neural field models and neural mass models. Models of this type
+\brian{Existing lit on models} The literature describing mesoscopic neural models is dominated by neural field models and neural mass models. Models of this type
+
+\brian{Introduce the importance of the models, inverse}
+More recently, advances engineering and statistical inference methods and computing resources have expanded the utility of the mesoscopic models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology. An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown. Thus the ability to estimate these quantities using the framework will enable a greater understanding of individuals pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems.
+
+\brian{Models are qualitative - need to validate properly}
+To date a large body of work has attempted to demonstrate the validity of mesoscopic models in-principal, through the ability to qualitatively reproduce experimental data. Since the parameters of the models are expected to vary across individuals and across disease states, the models must be tuned to individuals to establish clinical utility. A critical steps in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to neuroscience community for formally accessing feasibility. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. Once models have been fit to subjects, a final step in assessing validity will be to examine the within subject predictive power. In order for such a framework to be established as a clinical platform further work is required for establishing validity and feasibility for the mesoscopic models.  
+
+If model does not work then it is hard to say why. For example, the model itself could be too complicated or an estimation method could not be good enough. Is an approximate filter good enough etc etc. 
+
 
 % Influence on sampling rate and estimation?
 % of this framework History of models and estimation attempts
@@ -225,12 +236,12 @@ EKF doesn't reach bound for any nonlinear model, thus better algorithms are requ
 
 \section{Discussion}
 \brian{Brief Summary of Paper}
-This paper has introduced a method for evaluating Bayesian estimation algorithms for fitting neural mass models to electrophysiological data. By providing bounds on the estimation accuracy, the results demonstrate that it is feasible to recover three neural mass models of varying complexity from data. Under the assumption that these models capture the essential dynamics of the phenomena observed in intracranial electroencephalography, the results imply that is possible to tailor computational models to an individual's brain dynamics. 
+This paper has introduced a method for evaluating Bayesian estimation algorithms for fitting neural models to electrophysiological data. The results demonstrate that it is feasible to recover three neural models of varying complexity from data, by providing bounds on the possible estimation accuracy. Under the assumption that these models capture the essential dynamics of the phenomena observed in intracranial electroencephalography, the results imply that is possible to tailor computational models to an individual's brain dynamics. 
 
 \brian{Feasibility of Models}
 We have demonstrated how the methods described in this paper can be used to test the feasibility of recovering the states of computational models from data. In other words, the method can be used to test if a model is too complex to be recovered data, regardless of the estimation method. The Bayesian Cramer-Rao lower bound (BCRLB) essentially measures the amount of information regarding the states that is present in the measurement. If the measurement has no information regarding the states of the model, then the bound will be infinitely high. 
 
-Neural mass models have evolved from a description of interaction of two very general populations, excitatory and inhibitory neurons, to interactions of specific populations that describe various networks. Cortical neural populations include pyramidal, spiny stellate, fast and slow inhibitory interneurons (ref). Deep brain populations include globus paladius, substansia niagara, sub-thalamic nuclei and more (ref). As models become more biologically realistic the BCRLB will be come more important for subject-specific modelling. Given that these models are all approximations then disturbances and modelling errors need to be accounted for. This naturally leads to Bayesian inference methods for subject-specific modelling to account for uncertainty. 
+Mesoscopic neural models have evolved from a description of interaction of two very general populations, excitatory and inhibitory neurons, to interactions of specific populations that describe various networks. Cortical neural populations include pyramidal, spiny stellate, fast and slow inhibitory interneurons (ref). Deep brain populations include globus paladius, substansia niagara, sub-thalamic nuclei and more (ref). As models become more biologically realistic the BCRLB will be come more important for subject-specific modeling. Given that these models are simplified approximations of the brain, disturbances and modeling errors must be accounted for in the system equations. This naturally leads to Bayesian inference methods for subject-specific modeling to account for uncertainty. 
 
 \brian{Is there a better observation to improve estimation? / experimental design}
 In addition to evaluating estimation feasability and performance, the BCRLB can improve experimental design. For example, the bound can be used to select the nodes in a network that are important to measure in order to g. For example, 
@@ -253,7 +264,7 @@ algorithm performance bench marking
 \brian{Not model section}
 Best case analysis which assumes the data comes from the model
 we say nothing about how algorithms will work with uncertainty in the actual model -- thus can be considered a ``best case'' situation, where we know the true model exactly.
-Model section still needs to be done by checking how the models can predict the behavior of the system, check need to be checked experimentally.
+Model section still needs to be done by checking how the models can predict the behavior of the system. This need to be checked with test data set.
 
 \brian{This method is the standard in radar and tracking and papers will not get published without it}
 This is the first point of call for benchmarking estimation and tracking algorithms in the radar applications (refs). We argue that this should also be the case for neural state estimation and tracking. Neuroscience stands to benefit greatly from estimation and control techniques from engineering
