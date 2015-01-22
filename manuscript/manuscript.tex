@@ -39,20 +39,23 @@
 \label{sec:introduction}
 
 \brian{What the paper is about / contribution}
-This paper introduces an existing engineering method to the neuroscience community for evaluating the feasibility of constructing subject-specific stochastic  computational models from measured data. Although the methods and models discussed in this paper are can be found in the engineering and computational neuroscience literature, it is important to link the fields together in order to advance our knowledge in systems neuroscience. 
+This paper introduces the Bayesian Cramer Rao lower bound (BCRLB) to the neuroscience community. The BCRLB is an engineering method for evaluating the feasibility of constructing stochastic computational models from measured data. The lower bound defines the best possible outcome of estimating system states in terms of the levels of certainty. Although the methods and models discussed in this paper can be found dispersed in the engineering and computational neuroscience literature, respectively, it is important to link the fields together in order to advance our knowledge in systems neuroscience. 
 
 \brian{Introduce the importance of the models, forward}
-Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Mesoscopic models describe the pooled dynamics of neural populations, analogous to signals recorded from a local field potential. Typically the state variables of models at this scale are the average membrane potential or the average firing rates of the neurons across the population. Forward models of this kind have led to theory on the emergence of the brains rhythms, the mechanisms of anesthetic agents, the brains response to sensory stimuli, short-term memory formation, visual hallucinations and epileptic seizures. 
-
-\brian{Existing lit on models} The literature describing mesoscopic neural models is dominated by neural field models and neural mass models. Models of this type
+Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Mesoscopic models describe the pooled dynamics of neural populations, analogous to signals recorded from a local field potential. Typically the state variables of models at this scale are the average membrane potential or the average firing rates of the neurons across the population (ref - Beurle, Wilson Cowan, Lopez Da Silva - van Rotterdam). More sophisticated models that describe higher-order statistics of neural populations have also been developed (Sompolinsky ?french guys? Jonathan Touboul). Forward models of this kind have led to theory on the emergence of the brains rhythms (Liley), the mechanisms of anesthetic agents (Liley - Dutch guys), the brains response to sensory stimuli (Jansen and Ritt), short-term memory formation (Coombes), visual hallucinations (Cowan Bressloff, Ermentrout) and epileptic seizures (Freestone, Robinson, Wendling, Grimbert?, Terry). 
 
 \brian{Introduce the importance of the models, inverse}
-More recently, advances engineering and statistical inference methods and computing resources have expanded the utility of the mesoscopic models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology. An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown. Thus the ability to estimate these quantities using the framework will enable a greater understanding of individuals pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems.
+More recently, advances engineering and statistical inference methods along with computing resources have expanded the utility of the mesoscopic models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology (Friston, Freestone, Schiff, Terry). An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown (Freestone - Book Chapter). Thus, the ability to estimate these quantities will enable a greater understanding of individuals pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems (Schiff Book).
 
-\brian{Models are qualitative - need to validate properly}
-To date a large body of work has attempted to demonstrate the validity of mesoscopic models in-principal, through the ability to qualitatively reproduce experimental data. Since the parameters of the models are expected to vary across individuals and across disease states, the models must be tuned to individuals to establish clinical utility. A critical steps in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to neuroscience community for formally accessing feasibility. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. Once models have been fit to subjects, a final step in assessing validity will be to examine the within subject predictive power. In order for such a framework to be established as a clinical platform further work is required for establishing validity and feasibility for the mesoscopic models.  
+\brian{Models are qualitative - need to validate properly - need to estimate parameters to do this}
+To date, a large body of work has attempted to demonstrate the validity of mesoscopic neural models by qualitatively reproducing measured data. For example, establishing a match between a generative model's spectral profile with an electrophysiological measurement has typically been used as validation. In reality, such a demonstration does little more for neuroscience then generate hypotheses that are currently difficult to test. Having said this, many beautiful mathematical results have emerged which capture our imagination, but do not \emph{prove} anything above brain function. The reason why this is the case is that the models have inherent uncertainty (unknown inputs) are parameters of these models are difficult (if not impossible) to measure. Therefore, parameters are often tuned to get the required output. In order to truly validate theory, useful predictions must be made. However, testing predictions against measured data has not been standard practice since the parameters of the models are expected to vary across individuals and across disease states, making the testing difficult. It is clear that a systematic framework for estimating system variables is required to truly validate mesoscopic neural theory.
 
-If model does not work then it is hard to say why. For example, the model itself could be too complicated or an estimation method could not be good enough. Is an approximate filter good enough etc etc. 
+A critical step in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to neuroscience community for formally accessing feasibility of estimating system variables. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. The methods introduced in this paper can also be used to improve experiments and maximize the information content of measurements. This paper does not deal with model selection. Once models have been fit to subjects, a final step in assessing validity will be to examine the within subject predictive power.  
+
+\brian{Layout}
+The rest of the paper is arranged as follows. Section~\ref{sec:background} provides a description of the equations for a neural mass model. Then a derivation of the Bayesian Cramer Rao lower bound in Section~\ref{sec:Theory}, followed by a description of a recursion required for applications involving filtering methods for state estimation. Next we provide a series of simulation that show how the bound is effected by measurement noise, and the variance of prior information. This is followed by a demonstration of how models with different structures have varying bounds, indicating how well we can possibly estimate the system states. The final simulation provides a comparison between bounds when the parameters of the models are set to obtain seizures-like patterns and alpha rhythm-like patterns. In the discussion section we provide further intuition into how the Bayesian Cramer Rao lower bound can help lead to advances in our knowledge and the development of theory in unlocking the secrets of the brain.
+
+% If model does not work then it is hard to say why. For example, the model itself could be too complicated or an estimation method could not be good enough. Is an approximate filter good enough etc etc.
 
 
 % Influence on sampling rate and estimation?
@@ -67,45 +70,53 @@ If model does not work then it is hard to say why. For example, the model itself
 \paragraph{Neural Mass Model}
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics{./figures/pdf/SingleMass_plos.pdf}
+    \includegraphics{./figures/pdf/SingleMass2.pdf}
   \end{center}
-  \caption{\emph{\textbf{Neural Mass Model.} The somas of the neural mass are represented by the triangle. The synaptic connections are represented by the circle. The input mean firing rate, $g(v_m(t))$, is convolved with post-synaptic response kernel (PSRK), shown in the inset on the left, to give the mean membrane potential, $v_n(t)$. This is transformed by the sigmoid, shown in the inset on the right, to give the output mean firing rate, $g(v_n(t))$.}}
+  \caption{\emph{\textbf{Neural Mass Model.} The soma of the neural mass is represented by the triangle and the synaptic connections are represented by the circles. The input mean firing rates, $g(v_{e}(t))$ and $g(v_{i}(t))$, are convolved with post-synaptic response kernels (PSRK), shown in the upper two insets, to give the excitatory and inhibitory post-synaptic membrane potentials (PSPs), $v_{e,n}(t)$ and $v_{i,n}(t)$, respectively. The PSPs are then summed and transformed by the sigmoid, shown in the lower inset, to give the output mean firing rate, $g(v_n(t))$. The neural mass may have any number of inputs and outputs. The firing rate on each of the outputs is equal.}}
   \label{fig:SingleNeuralMass}
 \end{figure}
-Neural mass models map from a mean firing rate of a population of pre-synaptic neurons to a mean membrane potential of a post-synaptic population, which in turn determines that population's output firing rate. A graphical description of a single population neural mass model can be seen in Figure~\ref{fig:SingleNeuralMass}, showing the key elements including the post-synaptic response kernel and the sigmoidal activation function. 
+Neural mass models describe the mean firing rates and mean membrane potentials of populations of neurons. A graphical description of a single population neural mass model can be seen in Figure~\ref{fig:SingleNeuralMass}, showing the key elements including the post-synaptic response kernels and the sigmoidal activation function. 
 
-To define a standard neural mass model, we begin by defining the post-synaptic potential of population $n$, $v_n(t)$, as a result of an input firing rate from population $m$, $g(v_m(t))$, as the convolution
+To derive a standard neural mass model, we begin by defining the mean membrane potential of population $n$, $v_n(t)$, as the \brian{(average)} soma as the sum of all $M$ incoming mean post-synaptic membrane potentials
+\begin{align}
+	v_n(t) = \sum_m^M v_{m,n}(t).
+\end{align}
+Each of the post-synaptic membrane potentials results from a convolution between the input firing rate from population $m$, $g(v_m(t))$, with a post-synaptic response kernel, which is defined by
 \begin{equation}\label{eq:conv_eq}
-    v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}}\int_{-\infty}^t  h_{mn}(t-t')g(v_m(t')) \,\mathrm{d}t',
+    v_{m,n}(t) = \frac{\alpha_{m,n}}{\tau_{m,n}}\int_{-\infty}^t  h_{m,n}(t-t')\phi_m(t') \,\mathrm{d}t'.
 \end{equation}
-where $\alpha_{mn}$ is the gain for the post-synaptic response kernel (PSRK), denoted by $h_{mn}(t)$, from neural population $m$ to $n$, and $\tau_{mn}$ is the membrane time constant. A common form of the PSRK is
+The parameter $\alpha_{m,n}$ is the gain for the post-synaptic response kernel (PSRK), denoted by $h_{m,n}(t)$, from neural population $m$ to $n$, $\tau_{mn}$ is the membrane time constant, and $\phi(t)$ is the incoming mean firing rate. A common form of the PSRK is
 \begin{equation}
     h_{mn}(t) = \eta(t)t\exp\left(-\frac{t}{\tau_{mn}}\right),
 \end{equation}
 where $\eta(t)$ is the Heaviside step function. An example of a PSRK can be seen in the left inset of Figure~\ref{fig:SingleNeuralMass}.  
 
-The firing rate of each population is related to the mean membrane potential by a sigmoidal activation function; the logistic function sigmoid is typically used: 
+The input firing rate to each population, $\phi_m(t)$, may come from a population that is explicitly modeled or an external input where
 \begin{align}
-    g\left(v_n(t)\right) =& \frac{1}{1+\exp{\left(\varsigma_n\left(v_{0n} - v_n(t)\right)\right)}}.
+	\phi_{m} =& \left\{ \begin{array}{lll} u_m  & \text{if } m \text{ indexes external inputs}\\
+	g(v_m)  & \text{if } m \text{ indexes internal inputs} \end{array}\right. .
+\end{align}
+and $g(\cdot)$ is the sigmoidal activation function that relates the mean membrane potential the the mean firing rate of a population. The logistic function sigmoid is typically used and is described by 
+\begin{align}
+    g\left(v_n(t)\right) =& \frac{1}{1+\exp{\left(\varsigma_n\left(v_{0} - v_n(t)\right)\right)}}.
     \label{eq:sigmoid}
 \end{align}
-The quantity $\varsigma_n$ describes the slope of the sigmoid (approximating the variance of firing thresholds within the populations) and $v_{0n}$ describes the mean firing threshold relative to a mean rest potential. An example of the sigmoidal activation function can be seen in the right inset of Figure~\ref{fig:SingleNeuralMass}.
+The quantity $\varsigma_n$ parametrizes the slope of the sigmoid (approximating the variance of firing thresholds within the populations) and $v_{0}$ describes the mean firing threshold relative to a mean rest potential. An example of the sigmoidal activation function can be seen in the lower inset of Figure~\ref{fig:SingleNeuralMass}.
 
 The convolution in Equation~\ref{eq:conv_eq} can also be written as the ordinary differential equation (ODE)
 \begin{equation}\label{eq:2ndOrder}
-    \mathrm{D}v_n(t) = \frac{\mathrm{d}^2 v_n(t)}{\mathrm{d}t^2} + \frac{2}{\tau_{mn}}\frac{\mathrm{d} v_n(t)}{\mathrm{d}t} + \frac{1}{\tau_{mn}^2} v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} g(v_m(t)),
+    \mathrm{D}v_n(t) = \frac{\mathrm{d}^2 v_n(t)}{\mathrm{d}t^2} + \frac{2}{\tau_{mn}}\frac{\mathrm{d} v_n(t)}{\mathrm{d}t} + \frac{1}{\tau_{mn}^2} v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} \phi_m(t),
 \end{equation}
-where $\mathrm{D}$ is a linear differential operator. Equation~\ref{eq:2ndOrder} can be written as two coupled first-order ODEs by 
+where $\mathrm{D}$ is a linear differential operator. The form a state-space model in a canonical format, equation~\ref{eq:2ndOrder} is written as two coupled first-order ODEs by 
 \begin{equation} \label{eq:2ndOrderNMM}
-    \frac{\mathrm{d} v_n(t)}{\mathrm{d}t} = z_n(t),\,\,\,\,\,    \frac{\mathrm{d}z_n(t)}{\mathrm{d}t} = \frac{\alpha_{mn}}{\tau_{mn}} g(v_m(t)) - \frac{2}{\tau_{mn}}z_n(t) - \frac{1}{\tau_{mn}^2} v_n(t),
+    \frac{\mathrm{d} v_n(t)}{\mathrm{d}t} = z_n(t),\,\,\,\,\,    \frac{\mathrm{d}z_n(t)}{\mathrm{d}t} = \frac{\alpha_{mn}}{\tau_{mn}} \phi_m(t) - \frac{2}{\tau_{mn}}z_n(t) - \frac{1}{\tau_{mn}^2} v_n(t).
 \end{equation}
-where $z_n(t)$ is a dummy variable. This forms the basis of a state-space model in a canonical format.
 
-The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set so the neural mass has characteristics of specific neural populations, such as pyramidal neurons, spiny stellate cells and fast and slow inhibitory interneurons (GABA$_\mathrm{a}$ and GABA$_\mathrm{b}$). The neural populations can then be connected to represent the circuitry of a cortical column and further to form networks of columns. Various kinds of neural mass models have been developed \cite{Silva1974,Jansen1995,Wendling2002,David2003}, which are depicted in Figure~\ref{fig:NMMs}. Each synaptic connection in these networks can be described by the 2$^{\mathrm{nd}}$-order system of Equation~\ref{eq:2ndOrderNMM}, where the resultant dimensions of the networks of neural mass models in Figures~\ref{fig:NMMs} a, b and c are 6, 12 and 18, respectively.
+The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set so the neural mass has characteristics of a specific neural population, such as pyramidal neurons, spiny stellate cells and fast and slow inhibitory interneurons (GABA$_\mathrm{a}$ and GABA$_\mathrm{b}$). The neural masses can then be interconnected to represent the circuitry of a cortical column and further to form networks of columns. A small subset of the various kinds of neural mass models that have been explored \cite{Silva1974,Jansen1995,Wendling2002,David2003} are depicted in Figure~\ref{fig:NMMs}. Each synaptic connection in these networks can be described by the 2$^{\mathrm{nd}}$-order system of Equation~\ref{eq:2ndOrderNMM}, where the resultant dimensions (before simplification) of the networks of neural mass models in Figures~\ref{fig:NMMs} A, B, and C are 6, 12 and 18, respectively.
 \begin{figure}[ht]
 	\centering
-		\includegraphics[scale=1]{./figures/pdf/NeuralMassesHoriz_plos.pdf}
-	\caption{\emph{\textbf{Models of Cortical Columns.} Each model has a pyramidal neural population, with various forms of feedback and inputs (Cx. = Cortex, Th. = Thalamus). The EEG is taken as the mean membrane potential of the pyramidal population, $v_p(t)$, with additive measurement noise.  a) Minimal model of a column with inhibitory feedback \cite{Silva1974}. b) An extension with excitatory feedback and afferent input from thalamus \cite{Jansen1995,David2003}. c) Column with inhibition occurring across two times scales, enabling modelling of higher frequency activity observed in seizures~\cite{Wendling2002}.}}
+		\includegraphics[scale=1]{./figures/pdf/NeuralMassesHoriz_plos2.pdf}
+	\caption{\emph{\textbf{Models of Cortical Columns.} Each model has a pyramidal neural population, with various forms of feedback and inputs. Measurements from the model are derived from the mean membrane potential of the pyramidal population, $v_p(t)$, with additive noise.  a) Minimal model of a column with inhibitory feedback \cite{Silva1974}. b) An extension with excitatory feedback and afferent input from thalamus \cite{Jansen1995,David2003}. c) Column with inhibition occurring across two times scales, enabling modeling of higher frequency activity observed in seizures~\cite{Wendling2002}.}}
 	\label{fig:NMMs}
 \end{figure}
 
@@ -116,75 +127,149 @@ The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set
 	\label{fig:NMMs}
 \end{figure}
 
+The higher dimensional models of cortical regions can be written in the form
+\begin{align}
+	\dot{\mathbf{x}} = \mathbf{A}\mathbf{x} + \mathbf{B} g\left(\mathbf{C}\mathbf{x}\right) + \mathbf{D}\mathbf{u},
+\end{align}
+where $\mathbf{x} \in \mathbb{R}^{N_x}$ is a state vector representing the postsynaptic membrane potentials generated by each population synapse and their time derivatives. There are two states per synapse and $N_x = 2N$ is the total number of states, where for $N$ synaptic connections in the models the state vector is of the form
+\begin{align}
+	\mathbf{x} = \begin{bmatrix} v_{1} & z_{1} & \hdots & v_{N} & z_{N}  \end{bmatrix}.
+\end{align}
+The matrix $\mathbf{A}$ encodes the dynamics induced by the membrane times and for $N$ synapses has the block diagonal structure
+\begin{align}
+	\mathbf{A} = \mathrm{diag}\left(\begin{array}{ccc}\boldsymbol{\Psi}_1 & \hdots & \boldsymbol{\Psi}_N\end{array}\right),
+\end{align}
+where
+\begin{align}
+	\boldsymbol{\Psi}_n = \begin{bmatrix} 0 & 1 \\ -\frac{1}{\tau_n^2} & -\frac{2}{\tau_n} \end{bmatrix}.
+\end{align}
+The matrix of synaptic gains from internal inputs, $\mathbf{B}$, has the diagonal form 
+\begin{align}
+	\mathbf{B} = \mathrm{diag}\left(\begin{array}{cccccccc} 0 & \alpha_1 & \hdots & 0 & \alpha_{N-K} & \hdots & 0 & 0 \end{array}\right),
+\end{align}
+where $K$ is the number of external inputs. The synaptic gains of post-synaptic potentials that are generated from external inputs are captured by the input gain matrix $\mathbf{D}$. The adjacency matrix, $\mathbf{C}$, defines the connectivity structure of the model. It is a matrix of zeros or ones that defines all the connections between the cell population types (excluding external inputs) 
+\begin{align}
+	\mathbf{C} = \begin{bmatrix} 0 & 0 & \hdots & 0 & 0 \\
+	\mathbf{c}_{2,1} & 0 &  & \mathbf{c}_{2,2(N-K)-1} & 0 \\ 
+	\vdots & &  & & \vdots \\
+	0 & 0 & \ddots & 0 & 0 \\
+ 	\mathbf{c}_{2(N-K),1} & 0 &  & \mathbf{c}_{2(N-K),2(N-K)-1} & 0 \\
+	\vdots & & & & \vdots \\
+	0 & 0 & & 0 & 0 \\
+	0 & 0 & \hdots & 0 & 0 \end{bmatrix}. 
+\end{align}
+For example, if the PSPs from synapses 1 and 2 are summed and transformed by the sigmoid to give the input firing rate to synapse $n$, then row $2n$ of $\mathbf{C}$ with have the form
+\begin{align}
+	c_{2n,:} = \begin{bmatrix} 1 & 0 & 1 & 0 & 0 & 0 & \hdots & 0 & 0 \end{bmatrix}.
+\end{align}
+As mentioned above, $\mathbf{D}$ is a diagonal matrix of synaptic gains for connections from external sources where
+\begin{align}
+	\mathbf{D} = \mathrm{diag} \left(\begin{array}{cccccccc}0 & 0 & \hdots & 0 & \alpha_{N-K+1} & \hdots & 0 & \alpha_N\end{array}\right).
+\end{align}
 
-The parameters of the neural masses not only define the population type, but also the behaviour exhibited by the model. For example, certain parameter combinations result in a model of a cortical column that will generate alpha wave type activity (normal activity) and, for another set of parameters, we create a model that will exhibit epileptic behaviour \cite{Wendling2002}. Therefore, we consider a family of models, which we define generally as 
+It is necessary to discretize the model to integrate the equations and run simulations. The discrete time version of the model is 
+\begin{align}
+	\dot{\mathbf{x}}_{t+\delta} = \mathbf{A}_{\delta}\mathbf{x}_t + \mathbf{B}_{\delta} g\left(\mathbf{C}\mathbf{x}_t\right) + \mathbf{D}_{\delta}\mathbf{u}_t,
+\end{align}
+where $\delta$ is the integration time step. The matrices $\mathbf{A}_{\delta}$, $\mathbf{B}_{\delta}$ and $\mathbf{D}_{\delta}$ are discrete time versions of $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{D}$, respectively, and are defined in Appendix~\ref{app:discretization}. For ease of notation, we shall abbreviate increments or decrements in time (by the integration time step) by $t+1$ or $t-1$, respectively. For the discrete time version of the model, the input $\mathbf{u}_t$ may be stochastic. A discrete time Gaussian input $u_t\sim\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$ represents a Wiener process (random walk) in the continuous time system. 
+
+The neural mass model is mapped to electrophysiological measurements by the observation equation
+\begin{align}
+	\mathbf{y}_t =& \mathbf{H}\mathbf{x}_t + \mathbf{e}_t,
+\end{align}
+where $\mathbf{H}\in \mathbb{R}^{N_x \times N_y}$ is the observation matrix, $\mathbf{e}\in \mathbb{R}^{N_y}$ is the observation noise, and $N_y$ is the number of observations. In the neural mass modeling literature, the observation matrix, $\mathbf{H}$, typically acts to map the mean membrane potential of pyramidal populations to the electrophysiological measurements. This choice of observation is motivated by evidence that the surface potentials in intracranial electroencephalography are proportional to the total synaptic currents of pyramidal neurons (Nunez). The incoming PSPs to the pyramidal cells are proportional to the synaptic currents.
+
+To derive the BCRLB, it is useful to write the model in a more compact form as
 \begin{align}\label{eq:NeuralMassModel}
-    \dot{\vec{x}}(t) =& \vec f_{\theta}\left(\vec{x}(t),\vec{u}(t)\right)\\
-    y(t) =& \mat{C}\vec{x}(t) + e(t),
+    \mathbf{x}_t =& \vec f_{\theta}\left(\mathbf{x}_t,\mathbf{u}_t\right)\\
+    \mathbf{y}_t =& \mathbf{H}\mathbf{x}_t + \mathbf{e}_t,
 \end{align}
-where $\vec{x}(t) \in \mathbb{R}^{n_x}$ is a state vector representing the postsynaptic membrane potentials generated by each population synapse and their time derivatives, $n_x$ is the number of states and $\vec{u}(t)$ represents the system input, which may be from afferent connections or other brain regions, exogenous input, or account for model inaccuracies. The function $\vec f_{\theta}(\cdot)$ describes the dynamics, where $\theta \in \mathbb{R}^{n_{\theta}}$ determines the model type and the behaviour it exhibits. The iEEG is denoted by $y(t)$, $\vec{C}$ is the observation matrix, and $e(t)$ is the observation noise.
+where the function $\vec f_{\theta}(\cdot)$ describes system dynamics and the parameters $\boldsymbol{\theta} \in \mathbb{R}^{n_{\theta}}$ determines the model type and the behavior it exhibits. 
+We explicitly use the subscript $\theta$ because the parameters of the neural masses not only define the population type, but also the behavior exhibited by the model. For example, certain parameter combinations result in a model of a cortical column that will generate alpha wave type activity (normal activity) and, for another set of parameters, we create a model that will exhibit epileptic behavior \cite{Wendling2002}. Therefore, we consider these systems as family of models. 
 
-\unit{Is the following paragraph needed? -}
-The model focused on in the following
-estimation sections is the formulation by Jansen and Rit \cite{Jansen-Rit-95}.
-Given space limitations we refer the reader to the article by Jansen
-and Rit\cite{Jansen-Rit-95} where the original state-space equations
-are presented. The parameters that were described in this section are related to the Jansen and Rit paper by
+
+% \unit{Is the following paragraph needed? -}
+% The model focused on in the following
+% estimation sections is the formulation by Jansen and Rit \cite{Jansen-Rit-95}.
+% Given space limitations we refer the reader to the article by Jansen
+% and Rit\cite{Jansen-Rit-95} where the original state-space equations
+% are presented. The parameters that were described in this section are related to the Jansen and Rit paper by
+% \begin{align}
+%     A =& \frac{\alpha_{pe}}{2e_0c_1} = \frac{\alpha_{pi}}{2e_0c_3} = \frac{\alpha_{ep}}{2e_0c_2} = \frac{\alpha_{xp}}{2e_0} \\
+%     B =& \frac{\alpha_{ip}}{2e_0c_4} \\
+%     a =& \frac{1}{\tau_{pe}} = \frac{1}{\tau_{pi}} = \frac{1}{\tau_{ep}} = \frac{1}{\tau_{xp}} \\
+%     b =& \frac{1}{\tau_{ip}},
+% \end{align}
+% where $e_0$ is a parameter that scales the maximum firing rate, $A$ and $B$ are synaptic gains for excitation and inhibition respectively, and $a$ and $b$ are the reciprocals of the synaptic time constants for excitation and inhibition, respectively, and the subscripts $p$, $e$, $x$, and $i$ denote pyramidal ($p$), excitatory interneuron (spiny stellate) ($e$), external ($x$) or inhibitory interneuron ($i$) populations, respectively. By making the assumption that all excitatory synapses share the same time constants and by defining the connectivity constants, $c_1$, $c_2$, $c_3$ and $c_4$, the network of neural masses is the JR NMM.
+
+
+\section{Theory}\label{sec:Theory}
+\subsection{Estimation Problem}
+The problem of estimating the distribution of the states given noisy measurements is well developed and described throughout the engineering and statistics literature. The problem is formalized by computing the conditional distribution $p\left(\mathbf{x}_t | \mathbf{y}_{1:T}\right)$, or in other words, finding the distribution of states given all observed data on the time interval $(0, T]$. Optimal inference can be achieved by applying two recursions. First a forward recursion using data up to time $t$,
 \begin{align}
-    A =& \frac{\alpha_{pe}}{2e_0c_1} = \frac{\alpha_{pi}}{2e_0c_3} = \frac{\alpha_{ep}}{2e_0c_2} = \frac{\alpha_{xp}}{2e_0} \\
-    B =& \frac{\alpha_{ip}}{2e_0c_4} \\
-    a =& \frac{1}{\tau_{pe}} = \frac{1}{\tau_{pi}} = \frac{1}{\tau_{ep}} = \frac{1}{\tau_{xp}} \\
-    b =& \frac{1}{\tau_{ip}},
+	p\left(\mathbf{x}_t | \mathbf{y}_{1:t}\right) \propto p(\mathbf{y}_t|\mathbf{x_t})\int p(\mathbf{x_t}|\mathbf{x_{t-1}})p(\mathbf{x}_{t-1}|\mathbf{y}_{1:t-1}) \, \mathrm{d}\mathbf{x}_{t-1}
 \end{align}
-where $e_0$ is a parameter that scales the maximum firing rate, $A$ and $B$ are synaptic gains for excitation and inhibition respectively, and $a$ and $b$ are the reciprocals of the synaptic time constants for excitation and inhibition, respectively, and the subscripts $p$, $e$, $x$, and $i$ denote pyramidal ($p$), excitatory interneuron (spiny stellate) ($e$), external ($x$) or inhibitory interneuron ($i$) populations, respectively. By making the assumption that all excitatory synapses share the same time constants and by defining the connectivity constants, $c_1$, $c_2$, $c_3$ and $c_4$, the network of neural masses is the JR NMM.
-
-
-\section{Theory}
-The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected performance of different estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are modelled as random variables. The BCRB is a lower bound on the mean squared error (MSE) of an estimator, $\hat{\vec x}(\vec y)$, given by
+for $t = 1,2,\hdots,T$. This is followed by a backward recursion to achieve target distribution
 \begin{align}
-	\mathsf{MSE} = \mathbb E_{\vec x,\vec y} [(\hat{\vec x}(\vec y) - \vec x)(\hat{\vec x}(\vec y) - \vec x)^T] \ge \mat J^{-1},
+	p\left(\mathbf{x}_t | \mathbf{y}_{1:T}\right) = p\left(\mathbf{x}_t | \mathbf{y}_{1:t}\right) \int \frac{p\left(\mathbf{x}_{t+1} | \mathbf{y}_{1:T}\right) p\left(\mathbf{x}_{t+1} | \mathbf{x}_{t}\right) }{\int p\left(\mathbf{x}_{t+1} | \mathbf{x}_{t}\right) p\left(\mathbf{x}_{t} | \mathbf{y}_{1:t}\right) \mathrm{d}\mathbf{x}_{t} } \mathrm{d}\mathbf{x}_{t+1},
+\end{align}
+for $t = T-1,T-2,\hdots,1,0$. If the dynamics $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ and observations $p(\mathbf{y}_t| \mathbf{x_t})$ are linear and Gaussian, then the recursions can be solved exactly by the Kalman filter (Paninski 2010 plus refs from paper). 
+
+The nonlinearities in the neural mass model lead to difficulties in solving the integrals, and furthermore, lead to non-Gaussian distributions even with Gaussian disturbances. Therefore, approximations are often used for propagating the state distribution through time $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ (ref Freestone, Schiff). Two popular approximations are the unscented Kalman filter and the extended Kalman filter. The unscented Kalman filter approximates $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ as a Gaussian and the EKF approximates the model $f(\mathbf{x},\mathbf{u})$ as linear, via a truncated Taylor series expansion. 
+
+In many Bayesian inference methods, including Kalman filtering, the mean of the posterior distribution is taken as the state estimate
+\begin{align}
+	\hat{\mathbf{x}}\left(\mathbf{y}\right) = \mathbb{E}_\mathbf{x}\left[p\left(\mathbf{x}|\mathbf{y}\right)\right].
+\end{align}
+
+
+\subsection{Bayesian Cramer-Rao Lower Bound}
+The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected (\brian{best possible?}) performance of estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are modeled as random variables. The BCRB is a lower bound on the mean squared error (MSE) of state estimates (\brian{of a system? }), $\hat{\mathbf{x}}\left(\mathbf{y}\right)$, given by (\brian{do we need so show $\hat x$ as a function of $y$?})
+\begin{align}
+	\mathsf{MSE} &= \mathbb E_{\mathbf{x},\mathbf{y}} \left[\left(\hat{\mathbf{x}}\left(\mathbf{y}\right) - \mathbf{x}\right) \left(\hat{\mathbf{x}}\left(\mathbf{y}\right) - \mathbf{x}\right)^{\top}\right] \nonumber \\
+	& \ge \mathbf{J}^{-1},
 	\label{eqn:mse_bound}
 \end{align}
-where $\mat J$ is the Bayes information matrix defined as
+where $\mathbf{J}$ is the Bayes information matrix. The Bayes information matrix is defined as
 \begin{align}
-	\mat J &= -\mathbb E_{\vec x,\vec y}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y,\vec x) \right],
+	\mathbf{J} &= -\mathbb E_{\mathbf{x},\mathbf{y}}\left[ \nabla_{\mathbf{x}}\nabla_{\mathbf{x}}^{\top} \log p(\mathbf{y},\mathbf{x}) \right],
 	\label{eqn:bayes_matrix}
 \end{align}
-$\nabla_{\vec x} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^T$, and the expectation is taken over both the state vector $\vec x$ and the measurements $\vec y$. In many Bayesian estimation schemes (including Kalman filtering) the estimator is the mean of the posterior distribution, $\hat{\vec x}(\vec y) = \mathbb{E}_{\vec x}\left[ p (\vec x|\vec y)\right]$. 
+$\nabla_{\mathbf{x}} = [\partial/\partial x_1,\ldots,\partial/\partial x_n]^{\top}$, and the expectation is taken over both the state vector $\mathbf{x}$ and the measurements $\mathbf{y}$. %In many Bayesian estimation schemes (including Kalman filtering) the estimator is the mean of the posterior distribution, $\hat{\vec x}(\vec y) = \mathbb{E}_{\vec x}\left[ p (\vec x|\vec y)\right]$. 
 
-To provide some intuition into the Bayes information matrix, we can write the joint distribution $p(\vec y,\vec x)$ as the product of the likelihood function, $\mathcal L$, and the prior distribution, $p_0$. Taking the logarithm gives
+To provide some intuition into the Bayes information matrix, we can write the joint distribution $p(\mathbf{y},\mathbf{x})$ as the product of the likelihood function, $\mathcal L$, and the prior distribution, $p_0(\mathbf{x})$. Taking the logarithm gives
 \begin{align}
-	\log p(\vec y,\vec x) =& \log\mathcal{L}(\vec x|\vec y) + \log p_0(\vec x).
+	\log p(\mathbf{y},\mathbf{x}) =& \log\mathcal{L}(\mathbf{x}|\mathbf{y}) + \log p_0(\mathbf{x}).
 \end{align}
-Using this relation, the Bayes information matrix in \eqref{eqn:bayes_matrix} can be decomposed into a data component, $\mat J_D$, and a prior component, $\mat J_P$, such that $\mat J = \mat J_D + \mat J_P$.
+Using this relation, the Bayes information matrix in \eqref{eqn:bayes_matrix} can be decomposed into a data component, $\mathbf{J}_D$, and a prior component, $\mathbf{J}_P$, such that $\mathbf{J} = \mathbf{J}_D + \mathbf{J}_P$.
 The two components are defined as
 \begin{align}
-	\mat J_D &= \mathbb E_{\vec x}\left[ \mat J_F(\vec x) \right]  \\
-	\mat J_P &= -\mathbb E_{\vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p_0(\vec x) \right]
+	\mathbf{J}_D &= \mathbb E_{\mathbf{x}}\left[ \mathbf{J}_F(\mathbf{x}) \right]  \\
+	\mathbf{J}_P &= -\mathbb E_{\mathbf{x}}\left[ \nabla_{\mathbf{x}}\nabla_{\mathbf{x}}^{\top} \log p_0(\mathbf{x}) \right],
 \end{align}
-where $\mat J_F$ is the classical Fisher information matrix for deterministic states,
+where $\mathbf{J}_F$ is the classical Fisher information matrix for deterministic states,
 \begin{align}
 	\mat J_F(\vec x) &= -\mathbb E_{\vec y| \vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) \right].
 \end{align}
 Some important insights can be gained from this decomposition. First, the contribution of the data to the Bayes information matrix is the expectation of the classical Fisher information matrix taken over all possible states. Secondly, the contribution from the prior distribution increases the Bayes information matrix, capturing our prior knowledge about of the states.
 
 \subsection{Recursive Bayesian CRB}
-To calculate a bound for filtering applications we are required to calculate $\mat J$ defined by \eqref{eqn:bayes_matrix} at each time, $k$. Fortunately, the structure of the joint density $p(\vec y,\vec x)$ allows for a recursive method to calculate $\mat J_k$ from $\mat J_{k-1}$, first demonstrated in \cite{Tichavsky1998}. The recursion presented in that work is not directly applicable to the neural field models described in Section~\ref{sec:background} since noise only enters the system through a single state and the resultant covariance matrix, $\mat Q$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to the models considered here and can be summarised as 
+To calculate a bound for filtering applications we are required to calculate $\mathbf{J}$ defined by \eqref{eqn:bayes_matrix} at each time, $t$. Fortunately, the structure of the joint density $p(\mathbf{y},\mathbf{x})$ allows for a recursive method to calculate $\mathbf{J}_t$ from $\mathbf{J}_{t-1}$, first demonstrated in \cite{Tichavsky1998}. The recursion presented in that work is not directly applicable to the neural field models described in Section~\ref{sec:background}, since noise only enters the system through a single state and the resultant covariance matrix, $\mathbf{Q}$, is singular. An alternative recursion proposed in \cite{Bergman2001} is suitable to the models considered here and can be summarized as 
 \begin{align}
-	\mat J_k = \left( \mat Q + {\mat F}_{k-1} \mat J_{k-1}^{-1} {\mat F}_{k-1}^T\right)^{-1} + \mat C^T \mat R^{-1} \mat C
+	\mathbf{J}_t = \left( \mathbf{Q} + {\mathbf{F}}_{t-1} \mathbf{J}_{t-1}^{-1} {\mathbf{F}}_{t-1}^{\top}\right)^{-1} + \mathbf{H}^{\top} \mathbf{R}^{-1} \mathbf{H}
 \end{align}
 where
 \begin{align}
-		{\mat F}_k &= \mathbb E_{\vec x_k} \left[ \nabla_{\vec x_k}^T \vec f(\vec x_k)\right] 
+		\mathbf{F}_t &= \mathbb E_{\mathbf{x}_t} \left[ \nabla_{\mathbf{x}_t}^{\top} \vec f(\mathbf{x}_t)\right] 
 		\label{eqn:F_matrix_expectation}
 \end{align}
-See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realisations are generated at each time point and the expectation is approximated by an average over the realisations.
+See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realizations are generated at each time point and the expectation is approximated by an average over the realizations.
 
-The bound defined in \eqref{eqn:mse_bound} can be used in several ways. First, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Thirdly, the efficiency of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. The results from this third test will provide an indication on whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
+The bound defined in \eqref{eqn:mse_bound} can be used in several ways. First, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Thirdly, the accuracy of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. The results from this third test will provide an indication on whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
 
 This paper assumes the parameters of a given model are constant and known. However, it is important to note that the results and conclusions presented in this paper are directly applicable to the case of slowly varying unknown parameters. This statement can be quantified by first considering a state vector that is augmented with constant unknown parameters \cite{sdf}. In this case, the information about the parameters accumulates each time step and the performance bound asymptotically approaches the case for constant known parameters. As an extension, if the parameters are varying slowly with respect to the sampling rate the bound will remain sufficiently close to the case of known parameters.
 
-\section{Simulations}
+\section{Simulations}\label{sec:Simulations}
 
 \subsection{Time}
 
@@ -215,11 +300,11 @@ We consider the feasibility of the three models described in Section~\ref{sec:ba
 
 \subsection{Within model - seizure, alpha}
 
-It has been well demonstrated that models of type B and C can generate vastly different oscillations for different parameters \cite{sdf}. Bifurcation theory provides a theoretical tool to analyse this feature and has been reported in several places \cite{sdf}. Good qualitative agreement between EEG data and the models has been observed and consequently different parameters sets have been assigned to different types of brain activity such as alpha rhythms or epileptic seizures \cite{sfd}.
+It has been well demonstrated that models of type B and C can generate vastly different oscillations for different parameters \cite{sdf}. Bifurcation theory provides a theoretical tool to analyze this feature and has been reported in several places \cite{sdf}. Good qualitative agreement between EEG data and the models has been observed and consequently different parameters sets have been assigned to different types of brain activity such as alpha rhythms or epileptic seizures \cite{sfd}.
 
 Here, we investigate ones ability to estimate the states of a model for different types of activity. We calculate the BCRB for model B for two parameter sets representing alpha rhythms and epileptic seizures.
 
-Fig.~\ref{fig:AlphaSeizure} illustrates that the states underlying seizure type behaviour is more difficult to estimate than background alpha rhythms. This is expected since the input noise driving the system is amplified by a larger synaptic gain parameter, $A$, for the seizure state, as listed in Table~\ref{tbl:Parameters}. This increases the overall uncertainty in the model, reduces the information obtained by the measurements and thus increases the bound.
+Fig.~\ref{fig:AlphaSeizure} illustrates that the states underlying seizure type behavior is more difficult to estimate than background alpha rhythms. This is expected since the input noise driving the system is amplified by a larger synaptic gain parameter, $A$, for the seizure state, as listed in Table~\ref{tbl:Parameters}. This increases the overall uncertainty in the model, reduces the information obtained by the measurements and thus increases the bound.
 
 \subsection{Benchmark algorithms}
 
@@ -322,6 +407,105 @@ Table here
 	\caption{\label{tbl:Parameters}Parameters used to generate different states}
 \end{table}
 
+\brian{\section*{Dean's Notes}
+\subsection*{Definition of Sigmoid}
+The error function version of the sigmoid is 
+\begin{align}
+	g(x) &= \frac{1}{2}\left(\mathrm{erf}\left(\frac{x-v_{0}}{\sqrt{2}\varsigma}\right) + 1\right).
+\end{align}
+This sigmoid is the cdf of a Gaussian, where $v_0$ is the mean and $\varsigma$ is the variance.
+\subsection*{Transformation of GRV By erf}
+Let
+\begin{align}
+	x\sim\mathcal{N}\left(\mu,\sigma^2\right)
+\end{align}
+and
+\begin{align}
+	y =& g(x) \\
+	=& \frac{1}{2}\left(\mathrm{erf}\left(\frac{x-v_0}{\sqrt{2}\varsigma}\right) + 1\right).
+\end{align}
+Define some quantities to get transformed distribution:
+\begin{align}
+	x =& g^{-1}(y) \\
+	  =& v_0 + \sqrt{2}\varsigma\mathrm{erf}^{-1}\left(2y-1\right) \\
+	\frac{\mathrm{d}x}{\mathrm{d}y} =& \sqrt{2\pi}\varsigma\exp \left( \left[\mathrm{erf}^{-1}\left(2y-1\right)\right]^2\right)
+\end{align}
+The pdf of $y$ is
+\begin{align}
+	f_Y(y) =& \left|\frac{\mathrm{d}x}{\mathrm{d}y}\right|f_X(g^{-1}(y)) \\
+	=& \frac{\varsigma}{\sigma}\exp\left(\left[\mathrm{erf}^{-1}\left(2y-1\right)\right]^2\right)\exp\left(-\frac{\left(v_0 + \sqrt{2}\varsigma\mathrm{erf}^{-1}\left(2y-1\right) - \mu\right)^2}{2\sigma^2}\right)
+\end{align}
+for $0<y<1$. Now let
+\begin{align}
+	z = \mathrm{erf}^{-1}\left(2y-1\right)
+\end{align}
+giving
+\begin{align}
+	f_Y(y)=& \frac{\varsigma}{\sigma}\exp\left(z^2\right)\exp\left(-\frac{\left(v_0 + \sqrt{2}\varsigma z - \mu\right)^2}{2\sigma^2}\right) \\
+	=& \frac{\varsigma}{\sigma}\exp\left(-\frac{2\sigma^2 z^2 - \left(v_0 + \sqrt{2}\varsigma z - \mu\right)^2}{2\sigma^2}\right)
+\end{align}
+Get the numerator of the exponent in quadratic form
+\begin{align}
+	\mathrm{num} =& 2\left(\varsigma^2 - \sigma^2\right)z^2 + 2\sqrt{2}\varsigma\left(v_0-\mu\right)z + \mu^2 + v_0^2 - 2\mu v_0 \\
+	=& az^2 + bz + c \\
+	=& a\left(z-h\right)^2 + k
+\end{align}
+where
+\begin{align}
+	a =& 2\left(\varsigma^2 - \sigma^2\right) \nonumber \\
+	b =& 2\sqrt{2}\varsigma\left(v_0-\mu\right) \nonumber \\
+	c =& \mu^2 + v_0^2 - 2\mu v_0 \nonumber \\
+	k =& c - \frac{b^2}{4a}\nonumber \\
+	h =& - \frac{b}{2a}\nonumber
+\end{align}
+This gives
+\begin{align}
+	f_Y(y)=& \frac{\varsigma}{\sigma}\exp\left(\frac{k}{2\sigma^2}\right)\exp\left(-\frac{ (z - h)^2}{\frac{2\sigma^2}{a}}\right)
+\end{align}
+So we have a Gaussian like structure that may be exploited if we linearize $z$ (via first-order Maclaurin series expansion) such that
+\begin{align}
+	z =& \mathrm{erf}^{-1}\left(2y-1\right) \\
+	\approx& \frac{\sqrt{\pi}}{2}\left(2y-1\right)
+\end{align}
+This may give and interesting alternative for Gaussian approximation filter??
+\subsection*{Mode Derivation}
+The Gaussian transformed by the error function sigmoid has the pdf
+\begin{align}
+	f_X(x)=& a\exp\left(-\frac{ \left(\mathrm{erf}^{-1}\left(2x-1\right) - b\right)^2}{c}\right)
+\end{align}
+Now let's find the mode. To simplify, first we take $\ln$ of $f_X(x)$ (since this will not shift the max) giving
+\begin{align}
+	\ln f_X(x)=& \ln a - \frac{ (\mathrm{erf}^{-1}\left(2x-1\right) - b)^2}{c}
+\end{align}
+Now find max by taking derivative and setting to zero. To do this we define
+\begin{align}
+	v =& 2x-1 \nonumber \\
+	w =& \mathrm{erf}^{-1}(v) \nonumber \\
+	y =& w-b \nonumber \\
+	z =& y^2/c \nonumber
+\end{align}
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{d}x} \ln f_X(x) =& 0
+\end{align}
+where
+\begin{align}
+	\frac{\mathrm{d}z}{\mathrm{d}y} \frac{\mathrm{d}y}{\mathrm{d}w} \frac{\mathrm{d}w}{\mathrm{d}v} \frac{\mathrm{d}v}{\mathrm{d}x} =& \frac{2y}{c} \times 1 \times \frac{\sqrt{\pi}}{2}\exp\left[\left(\mathrm{erf}^{-1}(v)\right)^2\right] \times 2 \\
+	=& 0.
+\end{align}
+This is true where $y=0$. This implies the mode occurs at
+\begin{align}
+	\mathrm{erf}^{-1}(2x-1) = b.
+\end{align}
+From above
+\begin{align}
+	b = \frac{\sqrt{2}\varsigma\left(\mu-v_0\right)}{2\left(\varsigma^2-\sigma^2\right)}.
+\end{align}
+Therefore the mode is
+\begin{align}
+	\mathrm{mode}\left(f_X(x)\right) = \frac{1}{2}\left(\mathrm{erf}\left(\frac{\sqrt{2}\varsigma\left(\mu-v_0\right)}{2\left(\varsigma^2 - \sigma^2\right)}\right)+1\right)
+\end{align}
+This is correct and can be checked by code below.
+}
 \small
 \bibliographystyle{ieeetr}
 \bibliography{References}
