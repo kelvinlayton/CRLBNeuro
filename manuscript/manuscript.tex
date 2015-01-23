@@ -26,7 +26,7 @@
 \renewcommand{\vec}[1]{\ensuremath{{\boldsymbol #1}}}
 \newcommand{\mat}[1]{\ensuremath{\boldsymbol{#1}}}
 
-\newcommand{\unit}[1]{\textcolor{green}{#1}}
+\newcommand{\unit}[1]{\textcolor{magenta}{#1}}
 \newcommand{\brian}[1]{\textcolor{blue}{#1}}
 
 \title{Statistical performance analysis of data-driven mesoscopic models}
@@ -39,21 +39,21 @@
 \label{sec:introduction}
 
 \brian{What the paper is about / contribution}
-This paper introduces the Bayesian Cramer Rao lower bound (BCRLB) to the neuroscience community. The BCRLB is an engineering method for evaluating the feasibility of constructing stochastic computational models from measured data. The lower bound defines the best possible outcome of estimating system states in terms of the levels of certainty. Although the methods and models discussed in this paper can be found dispersed in the engineering and computational neuroscience literature, respectively, it is important to link the fields together in order to advance our knowledge in systems neuroscience. 
+This paper introduces the Bayesian Cramer Rao lower bound (BCRLB) to the neuroscience community. The BCRLB is an engineering method for evaluating the feasibility of constructing stochastic computational models from measured data. The lower bound defines the best possible outcome of estimating system states in terms of the levels of certainty. Although the methods and models discussed in this paper can be found dispersed in the engineering and computational neuroscience literature, respectively, it is important to link the fields together in order to advance our knowledge in systems neuroscience. \unit{this sentence is true, but I worry it downplays the contribution of the paper. presumably we will have some new conclusions? or maybe not}
 
 \brian{Introduce the importance of the models, forward}
-Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Mesoscopic models describe the pooled dynamics of neural populations, analogous to signals recorded from a local field potential. Typically the state variables of models at this scale are the average membrane potential or the average firing rates of the neurons across the population (ref - Beurle, Wilson Cowan, Lopez Da Silva - van Rotterdam). More sophisticated models that describe higher-order statistics of neural populations have also been developed (Sompolinsky ?french guys? Jonathan Touboul). Forward models of this kind have led to theory on the emergence of the brains rhythms (Liley), the mechanisms of anesthetic agents (Liley - Dutch guys), the brains response to sensory stimuli (Jansen and Ritt), short-term memory formation (Coombes), visual hallucinations (Cowan Bressloff, Ermentrout) and epileptic seizures (Freestone, Robinson, Wendling, Grimbert?, Terry). 
+Mesoscopic mathematical models of the brain are becoming increasingly popular as tools for generating hypotheses on the physical principals that govern neurodynamics. Mesoscopic models describe the pooled dynamics of neural populations, analogous to signals recorded from a local field potential. Typically the state variables of models at this scale are the average membrane potential or the average firing rates of the neurons across the population (ref - Beurle, Wilson Cowan, Lopez Da Silva - van Rotterdam). More sophisticated models that describe higher-order statistics of neural populations have also been developed (Sompolinsky ?french guys? Jonathan Touboul). Forward models of this kind have led to theory on the emergence of the brains rhythms (Liley), the mechanisms of anesthetic agents (Liley - Dutch guys), the brain's response to sensory stimuli (Jansen and Ritt), short-term memory formation (Coombes), visual hallucinations (Cowan Bressloff, Ermentrout) and epileptic seizures (Freestone, Robinson, Wendling, Grimbert?, Terry). 
 
 \brian{Introduce the importance of the models, inverse}
-More recently, advances engineering and statistical inference methods along with computing resources have expanded the utility of the mesoscopic models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology (Friston, Freestone, Schiff, Terry). An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown (Freestone - Book Chapter). Thus, the ability to estimate these quantities will enable a greater understanding of individuals pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems (Schiff Book).
+More recently, advances in engineering and statistical inference methods along with computing resources have expanded the utility of the mesoscopic models as integral elements of frameworks to estimate system states that can not be directly measured using electrophysiology (Friston, Freestone, Schiff, Terry). An established framework to reliably estimate physical properties underlying brain dynamics has the potential to revolutionize how we observe, diagnose, treat and cure neurological disorders. For example, in epilepsy the dynamics of hidden system and parametric states are thought to be highly patient-specific and unknown (Freestone - Book Chapter). Thus, the ability to estimate these quantities will enable a greater understanding of individual pathologies, leading to more tailored therapies and better patient outcomes.  Furthermore, subject-specific models will enable the application of control theory to the neurosciences, which is typically limited to man-made systems (Schiff Book).
 
 \brian{Models are qualitative - need to validate properly - need to estimate parameters to do this}
-To date, a large body of work has attempted to demonstrate the validity of mesoscopic neural models by qualitatively reproducing measured data. For example, establishing a match between a generative model's spectral profile with an electrophysiological measurement has typically been used as validation. In reality, such a demonstration does little more for neuroscience then generate hypotheses that are currently difficult to test. Having said this, many beautiful mathematical results have emerged which capture our imagination, but do not \emph{prove} anything above brain function. The reason why this is the case is that the models have inherent uncertainty (unknown inputs) are parameters of these models are difficult (if not impossible) to measure. Therefore, parameters are often tuned to get the required output. In order to truly validate theory, useful predictions must be made. However, testing predictions against measured data has not been standard practice since the parameters of the models are expected to vary across individuals and across disease states, making the testing difficult. It is clear that a systematic framework for estimating system variables is required to truly validate mesoscopic neural theory.
+To date, a large body of work has attempted to demonstrate the validity of mesoscopic neural models by qualitatively reproducing measured data. For example, establishing a match between a generative model's spectral profile with an electrophysiological measurement has typically been used as validation. In reality, such a demonstration does little more for neuroscience than generate hypotheses that are currently difficult to test. Having said this, many beautiful mathematical results have emerged that capture our imagination, but do not \emph{prove} anything about brain function. The reason why this is the case is that the models have inherent uncertainty (unknown inputs) and parameters of these models are difficult (if not impossible) to measure. Therefore, parameters are often tuned to obtain the required output. In order to truly validate theory, useful predictions must be made. However, testing predictions against measured data has not been standard practice since the parameters of the models are expected to vary across individuals and across disease states, making the testing difficult. It is clear that a systematic framework for estimating system variables is required to truly validate mesoscopic neural theory.
 
-A critical step in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to neuroscience community for formally accessing feasibility of estimating system variables. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. The methods introduced in this paper can also be used to improve experiments and maximize the information content of measurements. This paper does not deal with model selection. Once models have been fit to subjects, a final step in assessing validity will be to examine the within subject predictive power.  
+A critical step in establishing robust model fitting techniques is understanding the performance and feasibility of estimation algorithms. This paper introduces engineering tools to the neuroscience community for formally accessing the feasibility of estimating system variables. We also postulate how these tools can be used to increase performance of estimation methods that are important for patient-specific modeling. \unit{how does the CRLB help increase algorithm performance? seems a bit of a stretch.} The methods introduced in this paper can also be used to improve experiments to maximize the information content of measurements. This paper does not deal with model selection. Once models have been fit to subjects, a final step in assessing validity will be to examine the predictive power within a subject.  \unit{would be good to have a reference on model selection here}
 
 \brian{Layout}
-The rest of the paper is arranged as follows. Section~\ref{sec:background} provides a description of the equations for a neural mass model. Then a derivation of the Bayesian Cramer Rao lower bound in Section~\ref{sec:Theory}, followed by a description of a recursion required for applications involving filtering methods for state estimation. Next we provide a series of simulation that show how the bound is effected by measurement noise, and the variance of prior information. This is followed by a demonstration of how models with different structures have varying bounds, indicating how well we can possibly estimate the system states. The final simulation provides a comparison between bounds when the parameters of the models are set to obtain seizures-like patterns and alpha rhythm-like patterns. In the discussion section we provide further intuition into how the Bayesian Cramer Rao lower bound can help lead to advances in our knowledge and the development of theory in unlocking the secrets of the brain.
+The remainder of the paper is arranged as follows. Section~\ref{sec:background} provides a description of the equations for a neural mass model. A derivation of the Bayesian Cramer Rao lower bound is presented in Section~\ref{sec:Theory}, followed by a description of the recursion required for applications involving filtering methods for state estimation. Next we provide a series of simulations that show how the bound is effected by measurement noise, and the variance of prior information. This is followed by a demonstration of how models with different structures have varying bounds, indicating how well we can possibly estimate the system states. The final simulation provides a comparison between bounds when the parameters of the models are set to obtain seizures-like patterns and alpha rhythm-like patterns. In the discussion section we provide further intuition into how the Bayesian Cramer Rao lower bound can help lead to advances in our knowledge and the development of theory in unlocking the secrets of the brain.
 
 % If model does not work then it is hard to say why. For example, the model itself could be too complicated or an estimation method could not be good enough. Is an approximate filter good enough etc etc.
 
@@ -107,12 +107,12 @@ The convolution in Equation~\ref{eq:conv_eq} can also be written as the ordinary
 \begin{equation}\label{eq:2ndOrder}
     \mathrm{D}v_n(t) = \frac{\mathrm{d}^2 v_n(t)}{\mathrm{d}t^2} + \frac{2}{\tau_{mn}}\frac{\mathrm{d} v_n(t)}{\mathrm{d}t} + \frac{1}{\tau_{mn}^2} v_n(t) = \frac{\alpha_{mn}}{\tau_{mn}} \phi_m(t),
 \end{equation}
-where $\mathrm{D}$ is a linear differential operator. The form a state-space model in a canonical format, equation~\ref{eq:2ndOrder} is written as two coupled first-order ODEs by 
+where $\mathrm{D}$ is a linear differential operator. To form a state-space model in a canonical format, Equation~\ref{eq:2ndOrder} is written as two coupled first-order ODEs by 
 \begin{equation} \label{eq:2ndOrderNMM}
     \frac{\mathrm{d} v_n(t)}{\mathrm{d}t} = z_n(t),\,\,\,\,\,    \frac{\mathrm{d}z_n(t)}{\mathrm{d}t} = \frac{\alpha_{mn}}{\tau_{mn}} \phi_m(t) - \frac{2}{\tau_{mn}}z_n(t) - \frac{1}{\tau_{mn}^2} v_n(t).
 \end{equation}
 
-The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set so the neural mass has characteristics of a specific neural population, such as pyramidal neurons, spiny stellate cells and fast and slow inhibitory interneurons (GABA$_\mathrm{a}$ and GABA$_\mathrm{b}$). The neural masses can then be interconnected to represent the circuitry of a cortical column and further to form networks of columns. A small subset of the various kinds of neural mass models that have been explored \cite{Silva1974,Jansen1995,Wendling2002,David2003} are depicted in Figure~\ref{fig:NMMs}. Each synaptic connection in these networks can be described by the 2$^{\mathrm{nd}}$-order system of Equation~\ref{eq:2ndOrderNMM}, where the resultant dimensions (before simplification) of the networks of neural mass models in Figures~\ref{fig:NMMs} A, B, and C are 6, 12 and 18, respectively.
+The parameters of the model, $\tau$, $\alpha$, $v_0$ and $\varsigma$, can be set so the neural mass has characteristics of a specific neural population, such as pyramidal neurons, spiny stellate cells and fast and slow inhibitory interneurons (GABA$_\mathrm{a}$ and GABA$_\mathrm{b}$). \unit{reference here} The neural masses can then be interconnected to represent the circuitry of a cortical column and further to form networks of columns. A small subset of the various kinds of neural mass models that have been explored \cite{Silva1974,Jansen1995,Wendling2002,David2003} are depicted in Figure~\ref{fig:NMMs}. Each synaptic connection in these networks can be described by the 2$^{\mathrm{nd}}$-order system of Equation~\ref{eq:2ndOrderNMM}, where the resultant dimensions (before simplification) of the networks of neural mass models in Figures~\ref{fig:NMMs} A, B, and C are 6, 12 and 18, respectively.
 \begin{figure}[ht]
 	\centering
 		\includegraphics[scale=1]{./figures/pdf/NeuralMassesHoriz_plos2.pdf}
@@ -133,8 +133,9 @@ The higher dimensional models of cortical regions can be written in the form
 \end{align}
 where $\mathbf{x} \in \mathbb{R}^{N_x}$ is a state vector representing the postsynaptic membrane potentials generated by each population synapse and their time derivatives. There are two states per synapse and $N_x = 2N$ is the total number of states, where for $N$ synaptic connections in the models the state vector is of the form
 \begin{align}
-	\mathbf{x} = \begin{bmatrix} v_{1} & z_{1} & \hdots & v_{N} & z_{N}  \end{bmatrix}.
+	\mathbf{x} = \begin{bmatrix} v_{1} & z_{1} & \hdots & v_{N} & z_{N}  \end{bmatrix}\unit{^\top}.
 \end{align}
+\unit{I wonder if x should have time dependence explicit, e.g., x(t) in 8 and 9}
 The matrix $\mathbf{A}$ encodes the dynamics induced by the membrane times and for $N$ synapses has the block diagonal structure
 \begin{align}
 	\mathbf{A} = \mathrm{diag}\left(\begin{array}{ccc}\boldsymbol{\Psi}_1 & \hdots & \boldsymbol{\Psi}_N\end{array}\right),
@@ -167,11 +168,12 @@ As mentioned above, $\mathbf{D}$ is a diagonal matrix of synaptic gains for conn
 	\mathbf{D} = \mathrm{diag} \left(\begin{array}{cccccccc}0 & 0 & \hdots & 0 & \alpha_{N-K+1} & \hdots & 0 & \alpha_N\end{array}\right).
 \end{align}
 
-It is necessary to discretize the model to integrate the equations and run simulations. The discrete time version of the model is 
+It is necessary to discretize the model to \unit{numerically} integrate the equations and run simulations. The discrete time version of the model is 
 \begin{align}
 	\dot{\mathbf{x}}_{t+\delta} = \mathbf{A}_{\delta}\mathbf{x}_t + \mathbf{B}_{\delta} g\left(\mathbf{C}\mathbf{x}_t\right) + \mathbf{D}_{\delta}\mathbf{u}_t,
 \end{align}
-where $\delta$ is the integration time step. The matrices $\mathbf{A}_{\delta}$, $\mathbf{B}_{\delta}$ and $\mathbf{D}_{\delta}$ are discrete time versions of $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{D}$, respectively, and are defined in Appendix~\ref{app:discretization}. For ease of notation, we shall abbreviate increments or decrements in time (by the integration time step) by $t+1$ or $t-1$, respectively. For the discrete time version of the model, the input $\mathbf{u}_t$ may be stochastic. A discrete time Gaussian input $u_t\sim\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$ represents a Wiener process (random walk) in the continuous time system. 
+\unit{what is $\dot x_{t+\delta}$? do you just mean $x_{t+\delta}$? or is the derivative a finite difference here?}
+where $\delta$ is the integration time step. The matrices $\mathbf{A}_{\delta}$, $\mathbf{B}_{\delta}$ and $\mathbf{D}_{\delta}$ are discrete time versions of $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{D}$, respectively, and are defined in Appendix~\ref{app:discretization}. For ease of notation, we shall abbreviate increments or decrements in time (by the integration time step) by $t+1$ or $t-1$, respectively. For the discrete time version of the model, the input $\mathbf{u}_t$ may be stochastic. A discrete time Gaussian input $\mathbf{u}_t\sim\mathcal{N}(\boldsymbol{\mu},\boldsymbol{\Sigma})$ represents a Wiener process (random walk) in the continuous time system. 
 
 The neural mass model is mapped to electrophysiological measurements by the observation equation
 \begin{align}
@@ -181,9 +183,10 @@ where $\mathbf{H}\in \mathbb{R}^{N_x \times N_y}$ is the observation matrix, $\m
 
 To derive the BCRLB, it is useful to write the model in a more compact form as
 \begin{align}\label{eq:NeuralMassModel}
-    \mathbf{x}_t =& \vec f_{\theta}\left(\mathbf{x}_t,\mathbf{u}_t\right)\\
+    \mathbf{x}_{t+1} =& \vec f_{\theta}\left(\mathbf{x}_t,\mathbf{u}_t\right)\\
     \mathbf{y}_t =& \mathbf{H}\mathbf{x}_t + \mathbf{e}_t,
 \end{align}
+\unit{I changed it to $t+1$ above}
 where the function $\vec f_{\theta}(\cdot)$ describes system dynamics and the parameters $\boldsymbol{\theta} \in \mathbb{R}^{n_{\theta}}$ determines the model type and the behavior it exhibits. 
 We explicitly use the subscript $\theta$ because the parameters of the neural masses not only define the population type, but also the behavior exhibited by the model. For example, certain parameter combinations result in a model of a cortical column that will generate alpha wave type activity (normal activity) and, for another set of parameters, we create a model that will exhibit epileptic behavior \cite{Wendling2002}. Therefore, we consider these systems as family of models. 
 
@@ -204,8 +207,9 @@ We explicitly use the subscript $\theta$ because the parameters of the neural ma
 
 
 \section{Theory}\label{sec:Theory}
+
 \subsection{Estimation Problem}
-The problem of estimating the distribution of the states given noisy measurements is well developed and described throughout the engineering and statistics literature. The problem is formalized by computing the conditional distribution $p\left(\mathbf{x}_t | \mathbf{y}_{1:T}\right)$, or in other words, finding the distribution of states given all observed data on the time interval $(0, T]$. Optimal inference can be achieved by applying two recursions. First a forward recursion using data up to time $t$,
+The problem of estimating the distribution of the states given noisy measurements is well developed and described throughout the engineering and statistics literature. The problem is formalized by computing the conditional distribution $p\left(\mathbf{x}_t | \mathbf{y}_{1:T}\right)$, or in other words, finding the distribution of states given all observed data on the time interval $(0, T]$. Optimal inference can be achieved by applying two recursions \unit{reference}. First a forward recursion using data up to time $t$,
 \begin{align}
 	p\left(\mathbf{x}_t | \mathbf{y}_{1:t}\right) \propto p(\mathbf{y}_t|\mathbf{x_t})\int p(\mathbf{x_t}|\mathbf{x_{t-1}})p(\mathbf{x}_{t-1}|\mathbf{y}_{1:t-1}) \, \mathrm{d}\mathbf{x}_{t-1}
 \end{align}
@@ -214,17 +218,19 @@ for $t = 1,2,\hdots,T$. This is followed by a backward recursion to achieve targ
 	p\left(\mathbf{x}_t | \mathbf{y}_{1:T}\right) = p\left(\mathbf{x}_t | \mathbf{y}_{1:t}\right) \int \frac{p\left(\mathbf{x}_{t+1} | \mathbf{y}_{1:T}\right) p\left(\mathbf{x}_{t+1} | \mathbf{x}_{t}\right) }{\int p\left(\mathbf{x}_{t+1} | \mathbf{x}_{t}\right) p\left(\mathbf{x}_{t} | \mathbf{y}_{1:t}\right) \mathrm{d}\mathbf{x}_{t} } \mathrm{d}\mathbf{x}_{t+1},
 \end{align}
 for $t = T-1,T-2,\hdots,1,0$. If the dynamics $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ and observations $p(\mathbf{y}_t| \mathbf{x_t})$ are linear and Gaussian, then the recursions can be solved exactly by the Kalman filter (Paninski 2010 plus refs from paper). 
+\unit{where did you get these equations? i can't follow them. Also think it's better and more common to use $t$ as current time, $t-1$ as previous time (or $t+1$ and $t$), rather than introducing $T$}
 
 The nonlinearities in the neural mass model lead to difficulties in solving the integrals, and furthermore, lead to non-Gaussian distributions even with Gaussian disturbances. Therefore, approximations are often used for propagating the state distribution through time $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ (ref Freestone, Schiff). Two popular approximations are the unscented Kalman filter and the extended Kalman filter. The unscented Kalman filter approximates $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ as a Gaussian and the EKF approximates the model $f(\mathbf{x},\mathbf{u})$ as linear, via a truncated Taylor series expansion. 
+\unit{My understanding is that both UKF and EKF approximate $p(\mathbf{x}_t | \mathbf{x}_{t-1})$ as a Gaussian. They just different methods to define the moments of the Gaussian (unscented transform, linearisation)}
 
 In many Bayesian inference methods, including Kalman filtering, the mean of the posterior distribution is taken as the state estimate
 \begin{align}
 	\hat{\mathbf{x}}\left(\mathbf{y}\right) = \mathbb{E}_\mathbf{x}\left[p\left(\mathbf{x}|\mathbf{y}\right)\right].
 \end{align}
-
+\unit{add time index to this equation}
 
 \subsection{Bayesian Cramer-Rao Lower Bound}
-The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the expected (\brian{best possible?}) performance of estimation algorithms. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are modeled as random variables. The BCRB is a lower bound on the mean squared error (MSE) of state estimates (\brian{of a system? }), $\hat{\mathbf{x}}\left(\mathbf{y}\right)$, given by (\brian{do we need so show $\hat x$ as a function of $y$?})
+The Bayesian Cramer-Rao bound (BCRB) can be used to examine the inherent uncertainty in a neural mass model and assess the  performance of estimation algorithms against the best possible. The bound was first formulated in \cite{VanTrees1968} for estimation of random parameters, making it well suited to the filtering problem described above when the states (membrane potentials and derivatives) are modeled as random variables. The BCRB is a lower bound on the mean squared error (MSE) of state estimates (\brian{of a system? }\unit{if you like, but i prefer without}), $\hat{\mathbf{x}}\left(\mathbf{y}\right)$, given by (\brian{do we need so show $\hat x$ as a function of $y$?} \unit{I get it looks a bit clunky, but we need it for the expectation over $x$ AND $y$ to make sense below})
 \begin{align}
 	\mathsf{MSE} &= \mathbb E_{\mathbf{x},\mathbf{y}} \left[\left(\hat{\mathbf{x}}\left(\mathbf{y}\right) - \mathbf{x}\right) \left(\hat{\mathbf{x}}\left(\mathbf{y}\right) - \mathbf{x}\right)^{\top}\right] \nonumber \\
 	& \ge \mathbf{J}^{-1},
@@ -249,7 +255,7 @@ The two components are defined as
 \end{align}
 where $\mathbf{J}_F$ is the classical Fisher information matrix for deterministic states,
 \begin{align}
-	\mat J_F(\vec x) &= -\mathbb E_{\vec y| \vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^T \log p(\vec y|\vec x) \right].
+	\mat J_F(\vec x) &= -\mathbb E_{\vec y| \vec x}\left[ \nabla_{\vec x}\nabla_{\vec x}^\top \log p(\vec y|\vec x) \right].
 \end{align}
 Some important insights can be gained from this decomposition. First, the contribution of the data to the Bayes information matrix is the expectation of the classical Fisher information matrix taken over all possible states. Secondly, the contribution from the prior distribution increases the Bayes information matrix, capturing our prior knowledge about of the states.
 
@@ -265,7 +271,9 @@ where
 \end{align}
 See Appendix~\ref{sec:derivation_recursion} for details. The expectation over the state $\vec x_k$ in \eqref{eqn:F_matrix_expectation} can rarely be computed in closed form for nonlinear transition functions so Monte Carlo techniques must be employed. A large number of state realizations are generated at each time point and the expectation is approximated by an average over the realizations.
 
-The bound defined in \eqref{eqn:mse_bound} can be used in several ways. First, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Thirdly, the accuracy of a given estimation algorithm (e.g. EKF, particle filter) can be assessed against the lower bound. The results from this third test will provide an indication on whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
+\unit{maybe we should restate the BCRB explicitly in the filtering context, $\mathsf{MSE}(\hat x_t) \ge J^{-1}_t$ etc. It's a bit implied at the moment}
+
+The bound defined in \eqref{eqn:mse_bound} can be used in several ways. First, different models can be compared to test the feasibility of estimating the unknown states from the measurements available. Secondly, different parameter sets can be tested within a single model to assess how the performance of an estimator is expected to change for different types of activity. Thirdly, the accuracy of a given estimation algorithm (e.g. EKF, particle filter \cite{something}) can be assessed against the lower bound. The results from this third test will provide an indication on whether developing progressively advanced estimation algorithms is warranted, a question that has not been considered in the neural estimation literature thus far.
 
 This paper assumes the parameters of a given model are constant and known. However, it is important to note that the results and conclusions presented in this paper are directly applicable to the case of slowly varying unknown parameters. This statement can be quantified by first considering a state vector that is augmented with constant unknown parameters \cite{sdf}. In this case, the information about the parameters accumulates each time step and the performance bound asymptotically approaches the case for constant known parameters. As an extension, if the parameters are varying slowly with respect to the sampling rate the bound will remain sufficiently close to the case of known parameters.
 
@@ -376,26 +384,26 @@ The recursion in \cite{Bergman2001} is
 \end{subequations}
 where
 \begin{align}
-	\bar{\mat F}_k &= \mathbb E \left[ \nabla_{\vec x_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
-	\bar{\mat R}_k^{-1} &= -\mathbb E\left[ \nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) \right] \\
-	\bar{\mat G}_k &= \mathbb E \left[ \nabla_{\vec v_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
-	\mat Q_k^{-1} &= -\mathbb E \left[ \nabla_{\vec v_k}\nabla_{\vec v_k}^T \log p(\vec v_k) \right]
+	\bar{\mat F}_k &= \mathbb E \left[ \nabla_{\vec x_k}^\top \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
+	\bar{\mat R}_k^{-1} &= -\mathbb E\left[ \nabla_{\vec x_k}\nabla_{\vec x_k}^\top \log p(\vec y_k|\vec x_k) \right] \\
+	\bar{\mat G}_k &= \mathbb E \left[ \nabla_{\vec v_k}^\top \tilde{\vec f_k}(\vec x_k,\vec v_k)\right] \\
+	\mat Q_k^{-1} &= -\mathbb E \left[ \nabla_{\vec v_k}\nabla_{\vec v_k}^\top \log p(\vec v_k) \right]
 \end{align}
 and $\mat P_0^{-1}$ is the inverse of the prior covariance. The model in \eqref{eqn:model_general} is represented by $\tilde{\vec f}(\vec x_k,\vec v_k) = \vec f(\vec x_k) + \vec v_k$. This simplifies the derivatives to
 \begin{align}
-	\nabla_{\vec x_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat F_k(\vec x_k) \\
-	\nabla_{\vec v_k}^T \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat I_{d\times d} \\
-	\nabla_{\vec x_k}\nabla_{\vec x_k}^T \log p(\vec y_k|\vec x_k) &= -\mat H^T\mat R^{-1} \mat H 
+	\nabla_{\vec x_k}^\top \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat F_k(\vec x_k) \\
+	\nabla_{\vec v_k}^\top \tilde{\vec f_k}(\vec x_k,\vec v_k) &= \mat I_{d\times d} \\
+	\nabla_{\vec x_k}\nabla_{\vec x_k}^\top \log p(\vec y_k|\vec x_k) &= -\mat H^\top\mat R^{-1} \mat H 
 \end{align}
 and the corresponding matrices to	
 \begin{align}
 	\bar{\mat F}_k &= \mathbb E\left[ \mat F_k(\vec x_k)\right] \label{eqn:pcrb_term_F}\\
-	\bar{\mat R}_k^{-1} &= \mat H^T\mat R^{-1} \mat H \\
+	\bar{\mat R}_k^{-1} &= \mat H^\top\mat R^{-1} \mat H \\
 	\bar{\mat G}_k &= \mat I_{d\times d} 
 \end{align}
 Therefore the final recursion is
 \begin{align}
-	\mat J_{k|k} = \left( \mat Q + \bar{\mat F}_{k-1} \mat J_{k-1}^{-1} \bar{\mat F}_{k-1}^T\right)^{-1} + \mat H_k^T \mat R^{-1} \mat H_k
+	\mat J_{k|k} = \left( \mat Q + \bar{\mat F}_{k-1} \mat J_{k-1}^{-1} \bar{\mat F}_{k-1}^\top\right)^{-1} + \mat H_k^\top \mat R^{-1} \mat H_k
 \end{align}
 
 \section{List of notation and parameters}
