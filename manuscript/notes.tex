@@ -1,0 +1,221 @@
+\documentclass{article}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{subfig}
+\usepackage{float} % For [H] placement
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+
+\usepackage{booktabs}
+
+\usepackage[bookmarks=true,ocgcolorlinks=true,plainpages=false, breaklinks=true, bookmarksopen=true, bookmarksnumbered=true]{hyperref}
+%\hypersetup{bookmarks=false}  %hide the bookmarks bar
+%\hypersetup{bookmarksopen=false}  % expand tree of bookmarks or just show first level
+\hypersetup{linkcolor=blue, citecolor=magenta,urlcolor=blue} % electronic
+\hypersetup{colorlinks=true}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\allowdisplaybreaks
+
+\renewcommand{\vec}[1]{\ensuremath{{\boldsymbol #1}}}
+\newcommand{\mat}[1]{\ensuremath{\boldsymbol{#1}}}
+
+\newcommand{\unit}[1]{\textcolor{green}{#1}}
+\newcommand{\brian}[1]{\textcolor{blue}{#1}}
+
+\title{Notes on a Sigmoidal Transformation of a Gaussian}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+
+\subsection*{Definition of Sigmoid}
+The error function version of the sigmoid is 
+\begin{align}
+	g(x) &= \frac{1}{2}\left(\mathrm{erf}\left(\frac{x-v_{0}}{\sqrt{2}\varsigma}\right) + 1\right).
+\end{align}
+This sigmoid is the cdf of a Gaussian, where $v_0$ is the mean and $\varsigma$ is the variance.
+
+\subsection*{Transformation of GRV By erf}
+Let
+\begin{align}
+	x\sim\mathcal{N}\left(\mu,\sigma^2\right)
+\end{align}
+and
+\begin{align}
+	y =& g(x) \\
+	=& \frac{1}{2}\left(\mathrm{erf}\left(\frac{x-v_0}{\sqrt{2}\varsigma}\right) + 1\right).
+\end{align}
+Define some quantities to get transformed distribution:
+\begin{align}
+	x =& g^{-1}(y) \\
+	  =& v_0 + \sqrt{2}\varsigma\mathrm{erf}^{-1}\left(2y-1\right) \\
+	\frac{\mathrm{d}x}{\mathrm{d}y} =& \sqrt{2\pi}\varsigma\exp \left( \left[\mathrm{erf}^{-1}\left(2y-1\right)\right]^2\right)
+\end{align}
+The pdf of $y$ is
+\begin{align}
+	f_Y(y) =& \left|\frac{\mathrm{d}x}{\mathrm{d}y}\right|f_X(g^{-1}(y)) \\
+	=& \frac{\varsigma}{\sigma}\exp\left(\left[\mathrm{erf}^{-1}\left(2y-1\right)\right]^2\right)\exp\left(-\frac{\left(v_0 + \sqrt{2}\varsigma\mathrm{erf}^{-1}\left(2y-1\right) - \mu\right)^2}{2\sigma^2}\right)
+\end{align}
+for $0<y<1$. Now let
+\begin{align}
+	z = \mathrm{erf}^{-1}\left(2y-1\right)
+\end{align}
+giving
+\begin{align}
+	f_Y(y)=& \frac{\varsigma}{\sigma}\exp\left(z^2\right)\exp\left(-\frac{\left(v_0 + \sqrt{2}\varsigma z - \mu\right)^2}{2\sigma^2}\right) \\
+	=& \frac{\varsigma}{\sigma}\exp\left(-\frac{2\sigma^2 z^2 - \left(v_0 + \sqrt{2}\varsigma z - \mu\right)^2}{2\sigma^2}\right)
+\end{align}
+Get the numerator of the exponent in quadratic form
+\begin{align}
+	\mathrm{num} =& 2\left(\varsigma^2 - \sigma^2\right)z^2 + 2\sqrt{2}\varsigma\left(v_0-\mu\right)z + \mu^2 + v_0^2 - 2\mu v_0 \\
+	=& az^2 + bz + c \\
+	=& a\left(z-h\right)^2 + k
+\end{align}
+where
+\begin{align}
+	a =& 2\left(\varsigma^2 - \sigma^2\right) \nonumber \\
+	b =& 2\sqrt{2}\varsigma\left(v_0-\mu\right) \nonumber \\
+	c =& \mu^2 + v_0^2 - 2\mu v_0 \nonumber \\
+	k =& c - \frac{b^2}{4a}\nonumber \\
+	h =& - \frac{b}{2a}\nonumber
+\end{align}
+This gives
+\begin{align}
+	f_Y(y)=& \frac{\varsigma}{\sigma}\exp\left(\frac{k}{2\sigma^2}\right)\exp\left(-\frac{ (z - h)^2}{\frac{2\sigma^2}{a}}\right)
+\end{align}
+So we have a Gaussian like structure that may be exploited if we linearize $z$ (via first-order Maclaurin series expansion) such that
+\begin{align}
+	z =& \mathrm{erf}^{-1}\left(2y-1\right) \\
+	\approx& \frac{\sqrt{\pi}}{2}\left(2y-1\right)
+\end{align}
+This may give and interesting alternative for Gaussian approximation filter??
+
+\subsection*{Mode Derivation}
+The Gaussian transformed by the error function sigmoid has the pdf
+\begin{align}
+	f_X(x)=& a\exp\left(-\frac{ \left(\mathrm{erf}^{-1}\left(2x-1\right) - b\right)^2}{c}\right)
+\end{align}
+Now let's find the mode. To simplify, first we take $\ln$ of $f_X(x)$ (since this will not shift the max) giving
+\begin{align}
+	\ln f_X(x)=& \ln a - \frac{ (\mathrm{erf}^{-1}\left(2x-1\right) - b)^2}{c}
+\end{align}
+Now find max by taking derivative and setting to zero. To do this we define
+\begin{align}
+	v =& 2x-1 \nonumber \\
+	w =& \mathrm{erf}^{-1}(v) \nonumber \\
+	y =& w-b \nonumber \\
+	z =& y^2/c \nonumber
+\end{align}
+\begin{align}
+	\frac{\mathrm{d}}{\mathrm{d}x} \ln f_X(x) =& 0
+\end{align}
+where
+\begin{align}
+	\frac{\mathrm{d}z}{\mathrm{d}y} \frac{\mathrm{d}y}{\mathrm{d}w} \frac{\mathrm{d}w}{\mathrm{d}v} \frac{\mathrm{d}v}{\mathrm{d}x} =& \frac{2y}{c} \times 1 \times \frac{\sqrt{\pi}}{2}\exp\left[\left(\mathrm{erf}^{-1}(v)\right)^2\right] \times 2 \\
+	=& 0.
+\end{align}
+This is true where $y=0$. This implies the mode occurs at
+\begin{align}
+	\mathrm{erf}^{-1}(2x-1) = b.
+\end{align}
+From above
+\begin{align}
+	b = \frac{\sqrt{2}\varsigma\left(\mu-v_0\right)}{2\left(\varsigma^2-\sigma^2\right)}.
+\end{align}
+Therefore the mode is
+\begin{align}
+	\mathrm{mode}\left(f_X(x)\right) = \frac{1}{2}\left(\mathrm{erf}\left(\frac{\sqrt{2}\varsigma\left(\mu-v_0\right)}{2\left(\varsigma^2 - \sigma^2\right)}\right)+1\right)
+\end{align}
+This is correct and can be checked by code below.
+
+% \subsection{New Gaussian Approximation}
+% \begin{align}
+% 	\mathrm{num} =& 2\left(\varsigma^2 - \sigma^2\right)z^2 + 2\sqrt{2}\varsigma\left(v_0-\mu\right)z + \mu^2 + v_0^2 - 2\mu v_0 \\
+% 	=& 2\left(\varsigma^2 - \sigma^2\right)(\frac{\sqrt{\pi}}{2}\left(2y-1\right))^2 + 2\sqrt{2}\varsigma\left(v_0-\mu\right)\frac{\sqrt{\pi}}{2}\left(2y-1\right) + \mu^2 + v_0^2 - 2\mu v_0
+% \end{align}
+%
+% This has the mean and variance
+% \begin{align}
+% 	\mu_y = \frac{1}{2}\left(1 - \frac{\varsigma\sqrt{2}(\mu - v_0)}{\sqrt{\pi}(\sigma^2 - \varsigma^2)}\right)
+% \end{align}
+\subsection*{Code}
+\begin{verbatim} 
+% params of sigmoid
+%
+v0 = 6;
+r = 0.56;
+varsigma = 1.699./r;
+
+% params of Gaussian to be transformed - can play with these guys to test
+% results
+%
+mu = 5.75;      
+sigma = 2.5;
+
+% for a numerical test
+%
+NSamples = 100000;
+x = mu + sigma*randn(1,NSamples);
+g_x = 0.5*(1 + erf((x-v0)/(sqrt(2)*varsigma)));
+
+% transformed distribution
+%
+N_points = 10000;
+y = linspace(1e-16,1-1e-16,N_points);
+z = erfinv(2*y-1);
+exponent_numerator = 2*sigma^2*z.^2 - (sqrt(2)*varsigma*z + v0 - mu).^2;
+f_Y_y = exp(exponent_numerator/(2*sigma^2))*varsigma/sigma;
+
+% 'a', 'b', and 'c' are from an expansion of 'exponent_numerator'
+%
+a = 2*(sigma^2 - varsigma^2);
+b = -2*sqrt(2)*varsigma*(v0 - mu);
+c = -mu^2 - v0^2 + 2*mu*v0;
+
+% these are defined to complete the square
+% 
+k = c - b^2/(4*a);
+h = - b/(2*a);
+
+% alternate form of dist
+%
+f_Y_y2 = (varsigma/sigma)*exp(k/(2*sigma^2))*exp((z - h).^2 / (2*sigma^2 / a));
+
+% this is supposed to be the mode of f_Y_y (its wrong though)
+%
+dist_mode = 0.5*(erf(sqrt(2)*varsigma*(mu-v0)/(2*(varsigma^2 - sigma^2))) + 1);
+dist_mean = 0.5*(erf((mu-v0)/(sqrt(2*(varsigma^2 - sigma^2)))) + 1);
+
+% plot results
+%
+figure
+BinSize = 0.01;
+bins = 0:BinSize:1;
+N = hist(g_x,bins);
+bar(bins,N/(sum(N)*BinSize),'facecolor','w','edgecolor','k')
+hold on
+xlim([0 1])
+plot(y,f_Y_y2,...
+    [dist_mode dist_mode],[0 max(f_Y_y)],...
+    [dist_mean dist_mean],[0 max(f_Y_y)],...
+    [approx_mean approx_mean],[0 max(f_Y_y)])
+legend('numerical f_Y(y)','analytic f_Y(y)','analytic mode','analytic mean')
+\end{verbatim}
+
+\small
+\bibliographystyle{ieeetr}
+\bibliography{References}
+
+
+
+
+\end{document}
