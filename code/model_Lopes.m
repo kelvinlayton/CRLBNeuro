@@ -43,8 +43,12 @@ F = [1, dt, 0, 0, 0, 0; ...
 
 % Sigmoid functions
 %
-f_v_i = 1 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
-f_v_e = 1 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population
+% f_v_i = 1 ./ (1 + exp(r*(v_0 - v_i)));      % firing rate of excitatory population
+% f_v_e = 1 ./ (1 + exp(r*(v_0 - v_e)));      % firing rate of inhibitory population
+
+varsigma = 1.699/r;
+f_v_e = 0.5*(erf((v_e - v_0)/(varsigma*sqrt(2))) + 1);
+f_v_i = 0.5*(erf((v_i - v_0)/(varsigma*sqrt(2))) + 1);
 
 
 if mode(1)=='t';
